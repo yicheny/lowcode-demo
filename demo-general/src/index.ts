@@ -22,6 +22,7 @@ import SimulatorLocalePlugin from './plugins/plugin-simulator-locale';
 import lowcodePlugin from './plugins/plugin-lowcode-component';
 import appHelper from './appHelper';
 import './global.scss';
+import PagesManagePlugin from "./plugins/plugin-pages-manage";
 
 async function registerPlugins() {
   await plugins.register(InjectPlugin);
@@ -98,6 +99,8 @@ async function registerPlugins() {
   await plugins.register(SimulatorLocalePlugin);
 
   await plugins.register(lowcodePlugin);
+
+  await plugins.register(PagesManagePlugin)
 };
 
 (async function main() {
