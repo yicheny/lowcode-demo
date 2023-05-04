@@ -23,6 +23,10 @@ import lowcodePlugin from './plugins/plugin-lowcode-component';
 import appHelper from './appHelper';
 import './global.scss';
 import PagesManagePlugin from "./plugins/plugin-pages-manage";
+import {LOGIN_KEY, store} from "./utils";
+import React from 'react'
+import ReactDOM from "react-dom";
+import {LoginView} from './views/LoginView'
 
 async function registerPlugins() {
   await plugins.register(InjectPlugin);
@@ -101,9 +105,9 @@ async function registerPlugins() {
   await plugins.register(lowcodePlugin);
 
   await plugins.register(PagesManagePlugin)
-};
+}
 
-(async function main() {
+async function lowCodeMain() {
   await registerPlugins();
 
   init(document.getElementById('lce-container')!, {
@@ -117,4 +121,22 @@ async function registerPlugins() {
     },
     appHelper,
   });
-})();
+}
+
+async function loginMain(){
+  const loginContainer = document.createElement('div');
+  loginContainer.id = 'loginContainer';
+  document.body.appendChild(loginContainer);
+  ReactDOM.render(<LoginView />, loginContainer);
+}
+
+(async function main(){
+  const loginInfo = store.get(LOGIN_KEY)
+  if(loginInfo){
+    //低代码设计器页面渲染
+    await lowCodeMain();
+  }else{
+    //登录页渲染
+    await loginMain()
+  }
+}())
