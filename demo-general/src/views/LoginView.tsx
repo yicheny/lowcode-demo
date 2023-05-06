@@ -1,5 +1,4 @@
 import { Modal, Button, Form, Input } from 'antd';
-import 'antd/dist/antd.css';
 import {LOGIN_KEY, store} from "../utils";
 
 export const LoginView = () => {
