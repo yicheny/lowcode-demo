@@ -1,9 +1,12 @@
 import { Modal, Button, Form, Input } from 'antd';
 import 'antd/dist/antd.css';
+import {LOGIN_KEY, store} from "../utils";
 
 export const LoginView = () => {
     const onFinish = (values: any) => {
         console.log('Success:', values);
+        store.set(LOGIN_KEY, values);
+        window.location.reload();
     };
 
     const onFinishFailed = (errorInfo: any) => {

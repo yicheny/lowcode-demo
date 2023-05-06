@@ -4,6 +4,9 @@ import { Message, Dialog } from '@alifd/next';
 import { IPublicTypeProjectSchema, IPublicEnumTransformStage } from '@alilc/lowcode-types';
 import DefaultPageSchema from './defaultPageSchema.json';
 import DefaultI18nSchema from './defaultI18nSchema.json';
+import {SCENARIO_NAME} from "../utils/Store";
+
+const scenarioName = SCENARIO_NAME
 
 const generateProjectSchema = (pageSchema: any, i18nSchema: any): IPublicTypeProjectSchema => {
   return {
@@ -15,13 +18,13 @@ const generateProjectSchema = (pageSchema: any, i18nSchema: any): IPublicTypePro
 }
 
 
-export const saveSchema = async (scenarioName: string = 'unknown') => {
+export const saveSchema = async () => {
   setProjectSchemaToLocalStorage(scenarioName);
   await setPackagesToLocalStorage(scenarioName);
   Message.success('成功保存到本地');
 };
 
-export const resetSchema = async (scenarioName: string = 'unknown') => {
+export const resetSchema = async () => {
   try {
     await new Promise<void>((resolve, reject) => {
       Dialog.confirm({
@@ -66,9 +69,11 @@ const setProjectSchemaToLocalStorage = (scenarioName: string) => {
     console.error('scenarioName is required!');
     return;
   }
+  const schema = project.exportSchema(IPublicEnumTransformStage.Save)
+  // console.log('schema', schema)
   window.localStorage.setItem(
     getLSName(scenarioName),
-    JSON.stringify(project.exportSchema(IPublicEnumTransformStage.Save))
+    JSON.stringify(schema)
   );
 }
 

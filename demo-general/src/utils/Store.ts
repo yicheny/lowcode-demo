@@ -35,4 +35,5 @@ function safeParse(d:any){
 
 export const store = new Store();
 export const LOGIN_KEY = 'login_info'
-
+export const SCHEMA_ACTIVE_KEY = 'schema_active'
+export const SCENARIO_NAME = "general"

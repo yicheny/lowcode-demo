@@ -3,6 +3,7 @@ import { Button } from '@alifd/next';
 import {
   saveSchema,
 } from '../../services/mockService';
+import {SCENARIO_NAME} from "../../utils/Store";
 
 // 保存功能示例
 const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {
@@ -10,8 +11,8 @@ const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {
     async init() {
       const { skeleton, config } = ctx;
       const doPreview = () => {
-        const scenarioName = config.get('scenarioName');
-        saveSchema(scenarioName);
+        const scenarioName = SCENARIO_NAME;
+        saveSchema();
         setTimeout(() => {
           const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
           window.open(`./preview.html${search}`);

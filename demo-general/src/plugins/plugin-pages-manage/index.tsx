@@ -1,14 +1,44 @@
 import * as React from 'react'
-import { Nav } from "@alifd/next";
+import {Nav} from "@alifd/next";
 import {IPublicModelPluginContext} from "@alilc/lowcode-types";
+import {useMemo, useState} from "react";
+import _ from 'lodash'
+import { project } from '@alilc/lowcode-engine';
+import {saveSchema} from "../../services/mockService";
+import {store} from "../../utils";
+import {SCHEMA_ACTIVE_KEY} from "../../utils/Store";
 
 const {Item} = Nav;
+const schema1 = require('./schema1.json');
+const schema2 = require('./schema2.json');
 
 function PagesManage() {
-    return <Nav type={'line'} defaultOpenAll>
-        <Item key={'home'}>首页</Item>
-        <Item key={'login'}>登录页</Item>
+    const data = useData();
+
+
+    return <Nav type={'line'} defaultOpenAll defaultSelectedKeys={[store.get(SCHEMA_ACTIVE_KEY)]}>
+        {
+            _.map(data, x => {
+                return <Item key={x.key} onClick={()=>switchSchema(x)}>{x.title}</Item>
+            })
+        }
     </Nav>
+}
+
+function switchSchema(x:any){
+    // console.log('switchSchema', data)
+    project.importSchema(x.data)
+    store.set(SCHEMA_ACTIVE_KEY,x.key)
+    saveSchema()
+}
+
+function useData() {
+    return useMemo(() => {
+        return [
+            {title: "首页", key: "home", data: schema1},
+            {title: "测试页1", key: "test1", data: schema2},
+        ]
+    }, [])
 }
 
 const PagesManagePlugin = (ctx: IPublicModelPluginContext) => {
@@ -24,7 +54,7 @@ const PagesManagePlugin = (ctx: IPublicModelPluginContext) => {
                 props: {
                     align: "top",
                     icon: 'zujianku',
-                    description: "路由管理"
+                    description: "schema管理"
                 }
             })
         }

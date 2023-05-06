@@ -9,8 +9,7 @@ import {
 const SaveSamplePlugin = (ctx: IPublicModelPluginContext) => {
   return {
     async init() {
-      const { skeleton, hotkey, config } = ctx;
-      const scenarioName = config.get('scenarioName');
+      const { skeleton, hotkey } = ctx;
 
       skeleton.add({
         name: 'saveSample',
@@ -20,7 +19,7 @@ const SaveSamplePlugin = (ctx: IPublicModelPluginContext) => {
           align: 'right',
         },
         content: (
-          <Button onClick={() => saveSchema(scenarioName)}>
+          <Button onClick={() => saveSchema()}>
             保存到本地
           </Button>
         ),
@@ -33,14 +32,14 @@ const SaveSamplePlugin = (ctx: IPublicModelPluginContext) => {
           align: 'right',
         },
         content: (
-          <Button onClick={() => resetSchema(scenarioName)}>
+          <Button onClick={() => resetSchema()}>
             重置页面
           </Button>
         ),
       });
       hotkey.bind('command+s', (e) => {
         e.preventDefault();
-        saveSchema(scenarioName);
+        saveSchema();
       });
     },
   };
