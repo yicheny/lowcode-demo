@@ -2,11 +2,13 @@ import React from 'react';
 import {Button, Form, Input, Modal} from 'antd';
 
 type AddModalProps = {
-    open:boolean
+    title:string,
+    open:boolean,
+    close:() => void,
 }
 
 export default function AddModal(props:AddModalProps) {
-    const {open} = props
+    const {open,close,title} = props
 
     const onFinish = (values: any) => {
         console.log('Success:', values);
@@ -16,7 +18,7 @@ export default function AddModal(props:AddModalProps) {
         console.log('Failed:', errorInfo);
     };
 
-    return <Modal title="新增" open={open} centered footer={null}>
+    return <Modal title={title} open={open} centered footer={null} onCancel={close}>
         <Form
             name="basic"
             labelCol={{ span: 6 }}

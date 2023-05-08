@@ -10,6 +10,8 @@ import {MinusCircleOutlined, EditOutlined, PlusCircleOutlined} from '@ant-design
 import clsx from "clsx";
 import AddModal from "./opeartions/add";
 import classes from './index.module.scss'
+import {useOpen} from "../../hooks";
+import DelModal from "./opeartions/del";
 
 const {Item} = List;
 const schema1 = require('./schema1.json');
@@ -21,11 +23,18 @@ type ItemInfo = {
     data: any
 }
 
+enum OPEN {
+    ADD,
+    EDIT,
+    DEL
+}
+
 function PagesManage() {
     const projectList = useProjectList()
     const schemaList = useSchemaList();
     const [active, setActive] = useState(store.get(SCHEMA_ACTIVE_KEY))
     const [project,setProject] = useState(store.get(PROJECT_KEY))
+    const {openInfo,setOpenInfo,checkOpenType,close} = useOpen()
 
     const selectSchema = (x:ItemInfo) => {
         if(store.get(SCHEMA_ACTIVE_KEY) === x.key) return
@@ -47,13 +56,15 @@ function PagesManage() {
             return <Item key={x.key} className={clsx(classes.item, {[classes.active]: active === x.key})} onClick={()=>selectSchema(x)}>
                 <span>{x.title}</span>
                 <span>
-                <PlusCircleOutlined style={{fontSize:18}} onClick={() => message.info("暂未实现新增")}/>
-                <EditOutlined style={{fontSize:18,marginLeft:12}} onClick={() => message.info("暂未实现编辑")}/>
-                <MinusCircleOutlined style={{fontSize:18,marginLeft:12}} onClick={() => message.info("暂未实现删除")}/>
+                <PlusCircleOutlined style={{fontSize:18}} onClick={() => setOpenInfo({type:OPEN.ADD})}/>
+                <EditOutlined style={{fontSize:18,marginLeft:12}} onClick={() => setOpenInfo({type:OPEN.EDIT})}/>
+                <MinusCircleOutlined style={{fontSize:18,marginLeft:12}} onClick={() => setOpenInfo({type:OPEN.DEL})}/>
             </span>
             </Item>
         }}/>
-        <AddModal open={false}/>
+        <AddModal title={'新增'} open={checkOpenType(OPEN.ADD)} close={close}/>
+        <AddModal title={'编辑'} open={checkOpenType(OPEN.EDIT)} close={close}/>
+        <DelModal open={checkOpenType(OPEN.DEL)} close={close}/>
     </>
 }
 
