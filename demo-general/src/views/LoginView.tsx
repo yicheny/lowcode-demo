@@ -1,11 +1,18 @@
 import { Modal, Button, Form, Input } from 'antd';
-import {LOGIN_KEY, store} from "../utils";
+import {LOGIN_KEY, store, tryExecute} from "../utils";
+import {usePost} from "../hooks";
 
 export const LoginView = () => {
+    const {doFetch} = usePost()
+
     const onFinish = (values: any) => {
-        console.log('Success:', values);
-        store.set(LOGIN_KEY, values);
-        window.location.reload();
+        // console.log('Success:', values);
+        tryExecute(async ()=>{
+            const infos = await doFetch(`/user/logIn`, values)
+            // console.log('infos', infos)
+            store.set(LOGIN_KEY, infos);
+            window.location.reload();
+        })
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -24,7 +31,7 @@ export const LoginView = () => {
         >
             <Form.Item
                 label="账号"
-                name="user"
+                name="userID"
                 rules={[{ required: true, message: '请输入账号！' }]}
             >
                 <Input />
@@ -32,7 +39,7 @@ export const LoginView = () => {
 
             <Form.Item
                 label="密码"
-                name="password"
+                name="userPwd"
                 rules={[{ required: true, message: '请输入密码！' }]}
             >
                 <Input.Password />

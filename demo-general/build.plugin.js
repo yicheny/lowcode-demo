@@ -45,6 +45,16 @@ module.exports = ({ onGetWebpackConfig }) => {
 
     config.plugins.delete('hot');
     config.devServer.hot(false);
+    config.devServer.proxy({
+      '/low-api': {
+        target:"http://192.168.6.157:8666",
+        secure:false,
+        changeOrigin:true,
+        pathRewrite:{
+          '^/low-api':""
+        }
+      }
+    })
 
     config.module // fixes https://github.com/graphql/graphql-js/issues/1272
       .rule('mjs$')

@@ -33,6 +33,7 @@
     "@alilc/lowcode-setter-title": "^1.0.2",
     "@ant-design/icons": "^5.0.1",
     "antd": "^4.21.4",
+    "axios": "^1.4.0",
     "clsx": "^1.2.1",
     "moment": "^2.29.3",
     "uuid": "^8.3.2"
