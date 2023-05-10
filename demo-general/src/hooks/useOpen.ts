@@ -2,6 +2,7 @@ import {useCallback, useState} from "react";
 
 type OpenInfo = {
     type?:number | string
+    [key:string]:any
 }
 
 export function useOpen(defaultValue:OpenInfo = {}){
