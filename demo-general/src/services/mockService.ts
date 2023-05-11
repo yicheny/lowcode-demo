@@ -18,10 +18,10 @@ const generateProjectSchema = (pageSchema: any, i18nSchema: any): IPublicTypePro
 }
 
 
-export const saveSchema = async () => {
+export const saveLocalSchema = async () => {
   setProjectSchemaToLocalStorage(scenarioName);
   await setPackagesToLocalStorage(scenarioName);
-  Message.success('成功保存到本地');
+  // Message.success('成功保存到本地');
 };
 
 export const resetSchema = async () => {

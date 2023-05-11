@@ -1,7 +1,7 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import { Button } from '@alifd/next';
 import {
-  saveSchema,
+  saveLocalSchema,
 } from '../../services/mockService';
 import {SCENARIO_NAME} from "../../utils/Store";
 
@@ -12,7 +12,7 @@ const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {
       const { skeleton, config } = ctx;
       const doPreview = () => {
         const scenarioName = SCENARIO_NAME;
-        saveSchema();
+        saveLocalSchema();
         setTimeout(() => {
           const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
           window.open(`./preview.html${search}`);

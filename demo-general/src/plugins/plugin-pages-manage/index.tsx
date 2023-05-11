@@ -2,9 +2,8 @@ import * as React from 'react'
 import {IPublicModelPluginContext} from "@alilc/lowcode-types";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {project} from '@alilc/lowcode-engine';
-import {saveSchema} from "../../services/mockService";
 import {LOGIN_KEY, store, tryExecute} from "../../utils";
-import {PROJECT_KEY, SCHEMA_ACTIVE_KEY} from "../../utils/Store";
+import {PROJECT_KEY, PAGE_ACTIVE_KEY, SCHEMA_ACTIVE_ID} from "../../utils/Store";
 import {List, Select} from 'antd'
 import {MinusCircleOutlined, EditOutlined, PlusCircleOutlined} from '@ant-design/icons'
 import clsx from "clsx";
@@ -29,7 +28,7 @@ enum OPEN {
 }
 
 function PagesManage() {
-    const [active, setActive] = useState<SLInfo>(store.get(SCHEMA_ACTIVE_KEY) || {})
+    const [active, setActive] = useState<SLInfo>(store.get(PAGE_ACTIVE_KEY) || {})
     const [project, setProject] = useState(store.get(PROJECT_KEY))
     const {openInfo, setOpenInfo, checkOpenType, close} = useOpen()
     const projectList = useProjectList()
@@ -127,15 +126,15 @@ function useSwitchSchema(itemID: number, sl: SLInfo) {
             const slID = sl.key;
             if (!slID) return
             const data = await doFetch(`/query/schemaInfoQuery?slID=${slID}`)
-            const schema = JSON.parse(_.get(data, 'siInfo') as unknown as string)
             // console.log('schema',schema)
-            switchSchema(schema)
+            switchSchema()
 
-            function switchSchema(schema: any) {
-                store.set(SCHEMA_ACTIVE_KEY, sl)
+            function switchSchema() {
+                store.set(PAGE_ACTIVE_KEY, sl)
                 store.set(PROJECT_KEY, itemID)
+                store.set(SCHEMA_ACTIVE_ID, _.get(data,'siID'))
+                const schema = JSON.parse(_.get(data, 'siInfo') as unknown as string)
                 project.importSchema(schema)
-                saveSchema()
             }
         })
     }, [itemID, sl])
