@@ -2,9 +2,9 @@ import * as React from 'react'
 import {IPublicModelPluginContext} from "@alilc/lowcode-types";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {project} from '@alilc/lowcode-engine';
-import {LOGIN_KEY, store, tryExecute} from "../../utils";
+import {LOGIN_KEY, store, tryExecute, utils} from "../../utils";
 import {PROJECT_KEY, PAGE_ACTIVE_KEY, SCHEMA_ACTIVE_ID} from "../../utils/Store";
-import {List, Select} from 'antd'
+import {List, Select, Input} from 'antd'
 import {MinusCircleOutlined, EditOutlined, PlusCircleOutlined} from '@ant-design/icons'
 import clsx from "clsx";
 import AddModal from "./opeartions/add";
@@ -33,8 +33,11 @@ function PagesManage() {
     const {openInfo, setOpenInfo, checkOpenType, close} = useOpen()
     const projectList = useProjectList()
     const {schemaList, refreshSchemaList} = useSchemaList(project);
+    const {filteredList,setFilterKey} = useFilter(schemaList)
 
     useSwitchSchema(project, active)
+
+    console.log('filteredList', filteredList)
 
     const selectSchema = (x: SLInfo) => {
         if (active.key === x.key) return
@@ -54,11 +57,12 @@ function PagesManage() {
     return <>
         <div style={{marginLeft: 16}}>
             当前环境：<Select placeholder={'请选择项目'} options={projectList} defaultValue={project}
-                             style={{width: 120}} onChange={selectProject}/>
+                             style={{width: 150}} onChange={selectProject}/>
             <PlusCircleOutlined style={{fontSize: 18, marginLeft: 12}}
-                                onClick={() => setOpenInfo({type: OPEN.ADD, info: {itemID: project,slName:null}})}/>
+                                onClick={() => setOpenInfo({type: OPEN.ADD, info: {itemID: project,slName:null}})}/> <br/>
+            <Input.Search placeholder={'搜索schema项'} style={{width: 240,marginTop:8}} onChange={(e)=>setFilterKey(e.target.value)}/>
         </div>
-        <List dataSource={schemaList} renderItem={(x: SLInfo) => {
+        <List dataSource={filteredList} renderItem={(x: SLInfo) => {
             return <Item key={x.key} className={clsx(classes.item, {[classes.active]: active.key === x.key})}
                          onClick={() => selectSchema(x)}>
                 <span>{x.title}</span>
@@ -138,6 +142,19 @@ function useSwitchSchema(itemID: number, sl: SLInfo) {
             }
         })
     }, [itemID, sl])
+}
+
+function useFilter(list:SLInfo[]){
+    const [filterKey,setFilterKey] = useState('')
+
+    const filteredList = useMemo(()=>{
+        if(utils.isNil(filterKey)) return list;
+        return _.filter(list,x=>{
+            return _.includes(x.title,filterKey)
+        })
+    },[list,filterKey])
+
+    return {filteredList,setFilterKey}
 }
 
 const PagesManagePlugin = (ctx: IPublicModelPluginContext) => {
