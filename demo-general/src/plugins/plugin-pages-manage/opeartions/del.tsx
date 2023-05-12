@@ -6,7 +6,7 @@ import {tryExecute} from "../../../utils";
 type DelModalProps = {
     open:boolean,
     close:() => void,
-    refresh:()=>void,
+    refresh:(itemID:any)=>void,
     info:{
         slName?:string,
         slID?:number,
@@ -23,14 +23,14 @@ export default function DelModal(props:DelModalProps) {
     </Modal>
 }
 
-function useCommit(close:()=>void,refresh:()=>void){
+function useCommit(close:()=>void,refresh:(itemID:any)=>void,){
     const {doFetch} = usePost();
 
     return useCallback((info:any)=>{
         tryExecute(async ()=>{
             await doFetch(`/process/schemaListDelete?slID=${info.slID}`)
             message.success('删除成功！')
-            refresh()
+            refresh(info.itemID)
             close()
         })
     },[])

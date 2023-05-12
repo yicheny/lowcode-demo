@@ -29,7 +29,7 @@ export function usePost(defaultData: UsePostInfo = INIT_DATA) {
             function handleError(error:any) {
                 // console.log('error', error)
                 setInfo({loading: false, error, data: null})
-                reject(error)
+                reject(new Error(error))
             }
         })
     }, [])

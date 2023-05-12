@@ -12,6 +12,7 @@ import classes from './index.module.scss'
 import {useOpen, usePost} from "../../hooks";
 import DelModal from "./opeartions/del";
 import _ from 'lodash'
+import {saveLocalSchema} from "../../services/mockService";
 
 const {Item} = List;
 
@@ -28,21 +29,14 @@ enum OPEN {
 }
 
 function PagesManage() {
-    const [active, setActive] = useState<SLInfo>(store.get(PAGE_ACTIVE_KEY) || {})
+    const {active,selectSchema,setActive} = useActive()
     const [project, setProject] = useState(store.get(PROJECT_KEY))
     const {openInfo, setOpenInfo, checkOpenType, close} = useOpen()
     const projectList = useProjectList()
-    const {schemaList, refreshSchemaList} = useSchemaList(project);
+    const {schemaList, refreshSchemaList} = useSchemaList(project,setActive);
     const {filteredList,setFilterKey} = useFilter(schemaList)
 
-    useSwitchSchema(project, active)
-
-    console.log('filteredList', filteredList)
-
-    const selectSchema = (x: SLInfo) => {
-        if (active.key === x.key) return
-        setActive(x)
-    }
+    useSwitchSchema(project,active)
 
     const selectProject = (value: string) => {
         setProject(value)
@@ -54,6 +48,9 @@ function PagesManage() {
         refresh: refreshSchemaList
     }
 
+    // console.log('render project', project, JSON.stringify(dialogInfo.info))
+    // console.log('active', active)
+
     return <>
         <div style={{marginLeft: 16}}>
             当前环境：<Select placeholder={'请选择项目'} options={projectList} defaultValue={project}
@@ -64,7 +61,9 @@ function PagesManage() {
         </div>
         <List dataSource={filteredList} renderItem={(x: SLInfo) => {
             return <Item key={x.key} className={clsx(classes.item, {[classes.active]: active.key === x.key})}
-                         onClick={() => selectSchema(x)}>
+                         onClick={() => {
+                             selectSchema(x);
+                         }}>
                 <span>{x.title}</span>
                 <span>
                 <EditOutlined style={{fontSize: 18, marginLeft: 12}}
@@ -86,22 +85,30 @@ function PagesManage() {
     </>
 }
 
-function useSchemaList(itemID: number) {
+function useSchemaList(itemID: number, setActive: (head: any)=>void) {
     const {data, doFetch} = usePost()
-
 
     const schemaList = useMemo(() => {
         return _.map(data, x => ({title: x.slName, key: x.slID}))
     }, [data])
 
-    const refreshSchemaList = useCallback(() => {
+    const refreshSchemaList = useCallback((itemID) => {
+        // console.log('refreshSchemaList itemID', itemID)
+
         tryExecute(async () => {
             if (!itemID) return
             await doFetch(`/query/schemaListQuery?itemID=${itemID}`)
         })
-    }, [itemID])
+    }, [])
 
-    useEffect(() => refreshSchemaList(), [refreshSchemaList])
+    useEffect(()=>{
+        // console.log(itemID , store.get(PROJECT_KEY) , schemaList)
+        if(itemID === store.get(PROJECT_KEY)) return
+        const x = _.head(schemaList) || {key:null,title:null}
+        setActive(x)
+    },[setActive,schemaList])
+
+    useEffect(() => refreshSchemaList(itemID), [itemID])
 
     return {schemaList, refreshSchemaList}
 }
@@ -122,26 +129,27 @@ function useProjectList() {
     }, [data])
 }
 
-function useSwitchSchema(itemID: number, sl: SLInfo) {
+function useSwitchSchema(itemID:number,sl:SLInfo) {
     const {doFetch} = usePost()
 
     useEffect(() => {
         tryExecute(async () => {
-            const slID = sl.key;
+            const slID = sl.key
             if (!slID) return
             const data = await doFetch(`/query/schemaInfoQuery?slID=${slID}`)
             // console.log('schema',schema)
             switchSchema()
 
             function switchSchema() {
-                store.set(PAGE_ACTIVE_KEY, sl)
                 store.set(PROJECT_KEY, itemID)
+                store.set(PAGE_ACTIVE_KEY, sl)
                 store.set(SCHEMA_ACTIVE_ID, _.get(data,'siID'))
                 const schema = JSON.parse(_.get(data, 'siInfo') as unknown as string)
                 project.importSchema(schema)
+                saveLocalSchema()
             }
         })
-    }, [itemID, sl])
+    }, [itemID,sl])
 }
 
 function useFilter(list:SLInfo[]){
@@ -155,6 +163,17 @@ function useFilter(list:SLInfo[]){
     },[list,filterKey])
 
     return {filteredList,setFilterKey}
+}
+
+function useActive(){
+    const [active, setActive] = useState<SLInfo>(store.get(PAGE_ACTIVE_KEY) || {})
+
+    const selectSchema = useCallback((x: SLInfo) => {
+        if (active.key === x.key) return
+        setActive(x)
+    },[active])
+
+    return {active,selectSchema,setActive}
 }
 
 const PagesManagePlugin = (ctx: IPublicModelPluginContext) => {

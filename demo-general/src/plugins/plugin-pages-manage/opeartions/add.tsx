@@ -7,8 +7,12 @@ type AddModalProps = {
     title:string,
     open:boolean,
     close:() => void,
-    refresh:()=>void,
-    info:any,
+    refresh:(itemID:any)=>void,
+    info:{
+        slName?:string,
+        slID?:number,
+        itemID?:number
+    }
 }
 
 export default function AddModal(props:AddModalProps) {
@@ -26,7 +30,7 @@ export default function AddModal(props:AddModalProps) {
 
     return <Modal title={title} open={open} centered footer={null} onCancel={close}>
         <Form
-            key={info.slID}
+            key={`${info.itemID}_${info.slID}`}
             name="basic"
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 16 }}
@@ -52,14 +56,14 @@ export default function AddModal(props:AddModalProps) {
     </Modal>
 }
 
-function useCommit(close:()=>void,refresh:()=>void){
+function useCommit(close:()=>void,refresh:(itemID:string)=>void){
     const {doFetch} = usePost();
 
     return useCallback((info:any)=>{
         tryExecute(async ()=>{
             await doFetch('/process/schemaListSave',info)
             message.success('提交成功！')
-            refresh()
+            refresh(info.itemID)
             close()
         })
     },[])
