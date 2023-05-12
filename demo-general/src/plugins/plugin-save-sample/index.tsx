@@ -9,7 +9,7 @@ import {useCallback} from "react";
 import {store, tryExecute} from "../../utils";
 import { message } from 'antd'
 import {project} from "@alilc/lowcode-engine";
-import {PAGE_ACTIVE_KEY, SCHEMA_ACTIVE_ID} from "../../utils/stores";
+import {pageStore,schemaIdStore} from '../../utils'
 import _ from 'lodash'
 
 function Save(){
@@ -30,8 +30,8 @@ function useSaveServerSchema(){
   return useCallback(()=>{
     tryExecute(async ()=> {
       const siInfo = project.exportSchema(IPublicEnumTransformStage.Save)
-      const slID = _.get(store.get(PAGE_ACTIVE_KEY),'key')
-      const siID = store.get(SCHEMA_ACTIVE_ID)
+      const slID = _.get(pageStore.read(),'key')
+      const siID = schemaIdStore.read()
 
       // console.log(slID, siID, siInfo)
       if(!slID) throw new Error('请通过 schema管理 选择页面!')

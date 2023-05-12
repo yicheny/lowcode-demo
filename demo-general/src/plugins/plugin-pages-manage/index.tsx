@@ -2,8 +2,7 @@ import * as React from 'react'
 import {IPublicModelPluginContext} from "@alilc/lowcode-types";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {project} from '@alilc/lowcode-engine';
-import {loginStore, store, tryExecute, utils} from "../../utils";
-import {PROJECT_KEY, PAGE_ACTIVE_KEY, SCHEMA_ACTIVE_ID} from "../../utils/stores";
+import {loginStore, pageStore, projectStore, schemaIdStore, tryExecute, utils} from "../../utils";
 import {List, Select, Input} from 'antd'
 import {MinusCircleOutlined, EditOutlined, PlusCircleOutlined} from '@ant-design/icons'
 import clsx from "clsx";
@@ -30,7 +29,7 @@ enum OPEN {
 
 function PagesManage() {
     const {active,selectSchema,setActive} = useActive()
-    const [project, setProject] = useState(store.get(PROJECT_KEY))
+    const [project, setProject] = useState(projectStore.read())
     const {openInfo, setOpenInfo, checkOpenType, close} = useOpen()
     const projectList = useProjectList()
     const {schemaList, refreshSchemaList} = useSchemaList(project,setActive);
@@ -102,8 +101,7 @@ function useSchemaList(itemID: number, setActive: (head: any)=>void) {
     }, [])
 
     useEffect(()=>{
-        // console.log(itemID , store.get(PROJECT_KEY) , schemaList)
-        if(itemID === store.get(PROJECT_KEY)) return
+        if(itemID === projectStore.read()) return
         const x = _.head(schemaList) || {key:null,title:null}
         setActive(x)
     },[setActive,schemaList])
@@ -141,9 +139,9 @@ function useSwitchSchema(itemID:number,sl:SLInfo) {
             switchSchema()
 
             function switchSchema() {
-                store.set(PROJECT_KEY, itemID)
-                store.set(PAGE_ACTIVE_KEY, sl)
-                store.set(SCHEMA_ACTIVE_ID, _.get(data,'siID'))
+                projectStore.write(itemID)
+                pageStore.write(sl)
+                schemaIdStore.write(_.get(data,'siID'))
                 const schema = JSON.parse(_.get(data, 'siInfo') as unknown as string)
                 project.importSchema(schema)
                 saveLocalSchema()
@@ -166,7 +164,7 @@ function useFilter(list:SLInfo[]){
 }
 
 function useActive(){
-    const [active, setActive] = useState<SLInfo>(store.get(PAGE_ACTIVE_KEY) || {})
+    const [active, setActive] = useState<SLInfo>(pageStore.read() || {})
 
     const selectSchema = useCallback((x: SLInfo) => {
         if (active.key === x.key) return
