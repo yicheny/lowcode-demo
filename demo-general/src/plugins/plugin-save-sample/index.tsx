@@ -9,7 +9,7 @@ import {useCallback} from "react";
 import {store, tryExecute} from "../../utils";
 import { message } from 'antd'
 import {project} from "@alilc/lowcode-engine";
-import {PAGE_ACTIVE_KEY, SCHEMA_ACTIVE_ID} from "../../utils/Store";
+import {PAGE_ACTIVE_KEY, SCHEMA_ACTIVE_ID} from "../../utils/stores";
 import _ from 'lodash'
 
 function Save(){

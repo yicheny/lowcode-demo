@@ -2,8 +2,8 @@ import * as React from 'react'
 import {IPublicModelPluginContext} from "@alilc/lowcode-types";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {project} from '@alilc/lowcode-engine';
-import {LOGIN_KEY, store, tryExecute, utils} from "../../utils";
-import {PROJECT_KEY, PAGE_ACTIVE_KEY, SCHEMA_ACTIVE_ID} from "../../utils/Store";
+import {loginStore, store, tryExecute, utils} from "../../utils";
+import {PROJECT_KEY, PAGE_ACTIVE_KEY, SCHEMA_ACTIVE_ID} from "../../utils/stores";
 import {List, Select, Input} from 'antd'
 import {MinusCircleOutlined, EditOutlined, PlusCircleOutlined} from '@ant-design/icons'
 import clsx from "clsx";
@@ -118,7 +118,7 @@ function useProjectList() {
 
     useEffect(() => {
         tryExecute(async () => {
-            const loginInfo = store.get(LOGIN_KEY)
+            const loginInfo = loginStore.read()
             if (!loginInfo) return
             await doFetch(`/query/projectListQuery?userID=${loginInfo.userID}`)
         })

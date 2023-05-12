@@ -3,7 +3,7 @@ import { Button } from '@alifd/next';
 import {
   saveLocalSchema,
 } from '../../services/mockService';
-import {SCENARIO_NAME} from "../../utils/Store";
+import {SCENARIO_NAME} from "../../utils/stores";
 
 // 保存功能示例
 const PreviewSamplePlugin = (ctx: IPublicModelPluginContext) => {

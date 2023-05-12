@@ -24,7 +24,7 @@ import lowcodePlugin from './plugins/plugin-lowcode-component';
 import appHelper from './appHelper';
 import './global.scss';
 import PagesManagePlugin from "./plugins/plugin-pages-manage";
-import {LOGIN_KEY, store} from "./utils";
+import {loginStore} from "./utils";
 import React from 'react'
 import ReactDOM from "react-dom";
 import {LoginView} from './views/LoginView'
@@ -132,7 +132,7 @@ async function loginMain(){
 }
 
 (async function main(){
-  const loginInfo = store.get(LOGIN_KEY)
+  const loginInfo = loginStore.read()
   if(loginInfo){
     //低代码设计器页面渲染
     await lowCodeMain();

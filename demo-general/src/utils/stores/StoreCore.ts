@@ -1,4 +1,4 @@
-class Store{
+class StoreCore {
   private store: Storage; //做一层存储代理，方便替换，后期如果需要放到数据库，也方便处理
   private dict: Map<string, any>; //将数据放到内存中，极大提升IO速度
 
@@ -33,11 +33,4 @@ function safeParse(d:any){
   return null;
 }
 
-export const store = new Store();
-export const LOGIN_KEY = 'login_info'
-export const PROJECT_KEY = 'project_id'
-//列表项 ID
-export const PAGE_ACTIVE_KEY = 'page_id'
-//Schema ID
-export const SCHEMA_ACTIVE_ID = 'schema_id'
-export const SCENARIO_NAME = "general"
+export const store = new StoreCore();

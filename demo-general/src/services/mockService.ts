@@ -4,7 +4,7 @@ import { Message, Dialog } from '@alifd/next';
 import { IPublicTypeProjectSchema, IPublicEnumTransformStage } from '@alilc/lowcode-types';
 import DefaultPageSchema from './defaultPageSchema.json';
 import DefaultI18nSchema from './defaultI18nSchema.json';
-import {SCENARIO_NAME} from "../utils/Store";
+import {SCENARIO_NAME} from "../utils/stores";
 
 const scenarioName = SCENARIO_NAME
 

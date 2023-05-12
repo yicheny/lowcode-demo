@@ -1,5 +1,5 @@
 import { Modal, Button, Form, Input } from 'antd';
-import {LOGIN_KEY, store, tryExecute} from "../utils";
+import {loginStore, tryExecute} from "../utils";
 import {usePost} from "../hooks";
 
 export const LoginView = () => {
@@ -10,7 +10,7 @@ export const LoginView = () => {
         tryExecute(async ()=>{
             const infos = await doFetch(`/user/logIn`, values)
             // console.log('infos', infos)
-            store.set(LOGIN_KEY, infos);
+            loginStore.write(infos)
             window.location.reload();
         })
     };
