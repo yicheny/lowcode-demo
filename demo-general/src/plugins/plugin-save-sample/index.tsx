@@ -6,7 +6,7 @@ import {
 } from '../../services/mockService';
 import {usePost} from "../../hooks";
 import {useCallback} from "react";
-import {store, tryExecute} from "../../utils";
+import {tryExecute} from "../../utils";
 import { message } from 'antd'
 import {project} from "@alilc/lowcode-engine";
 import {pageStore,schemaIdStore} from '../../utils'
