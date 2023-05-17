@@ -1,0 +1,15 @@
+import {baseApi, bizApi} from "./utils";
+
+export async function appInit(){
+    console.log('appInit start...')
+
+    // ---测试baseApi---
+    const data = await baseApi.get('https://v1.hitokoto.cn',{ encode:'json' })
+    console.log('data', data)
+
+    // ---测试bizApi---
+    const bizData = await bizApi.post('/base-server/account/counterParty/queryList')
+    console.log('bizData', bizData)
+
+    console.log('appInit end...')
+}

@@ -28,6 +28,7 @@ import {loginStore} from "./utils";
 import React from 'react'
 import ReactDOM from "react-dom";
 import {LoginView} from './views/LoginView'
+import {appInit} from './init'
 
 async function registerPlugins() {
   await plugins.register(InjectPlugin);
@@ -132,6 +133,7 @@ async function loginMain(){
 }
 
 (async function main(){
+  await appInit()
   const loginInfo = loginStore.read()
   if(loginInfo){
     //低代码设计器页面渲染
