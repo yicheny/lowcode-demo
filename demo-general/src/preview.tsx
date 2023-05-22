@@ -8,6 +8,7 @@ import ReactRenderer from '@alilc/lowcode-react-renderer';
 import { injectComponents } from '@alilc/lowcode-plugin-inject';
 import appHelper from './appHelper';
 import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage, getPreviewLocale, setPreviewLocale } from './services/mockService';
+import {appInit} from "./init";
 
 const getScenarioName = function () {
   if (location.search) {
@@ -20,6 +21,8 @@ const SamplePreview = () => {
   const [data, setData] = useState({});
 
   async function init() {
+    appInit()
+
     const scenarioName = getScenarioName();
     const packages = getPackagesFromLocalStorage(scenarioName);
     const projectSchema = getProjectSchemaFromLocalStorage(scenarioName);

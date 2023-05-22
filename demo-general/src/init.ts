@@ -1,4 +1,6 @@
 import {baseApi, bizApi} from "./utils";
+// @ts-ignore
+import {df} from 'ylf-utils'
 
 export async function appInit(){
     console.log('appInit start...')
@@ -24,7 +26,9 @@ async function apiTest(){
 
 async function addWindowProps(){
     // @ts-ignore
-    window._baseApi = baseApi
-    // @ts-ignore
-    window._bizApi = bizApi
+    window._lib = {
+        baseApi,
+        bizApi,
+        df
+    }
 }

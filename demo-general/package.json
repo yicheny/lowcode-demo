@@ -36,7 +36,8 @@
     "axios": "^1.4.0",
     "clsx": "^1.2.1",
     "moment": "^2.29.3",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "ylf-utils": "^0.0.1"
   },
   "devDependencies": {
     "@alib/build-scripts": "^0.1.18",

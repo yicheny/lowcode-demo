@@ -15374,3 +15374,10 @@ yeast@0.1.2:
   version "0.1.2"
   resolved "https://registry.npmmirror.com/yeast/-/yeast-0.1.2.tgz#008e06d8094320c372dbc2f8ed76a0ca6c8ac419"
   integrity sha512-8HFIh676uyGYP6wP13R/j6OJ/1HwJ46snpvzE7aHAN3Ryqh2yX6Xox2B4CUmTwwOIzlG3Bs7ocsP5dZH/R1Qbg==
+
+ylf-utils@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.npmjs.org/ylf-utils/-/ylf-utils-0.0.1.tgz#edce38062c48200278a23bd2517a21c1b0e4e3cc"
+  integrity sha512-FG85Tg3DJM3FMhWNqbD1G8Ur9PGtfP6eY7qySRPTeahaHn0beZ2KJpRzCbkl1eKK3EXZiHrADN+y5jFEW7HmKg==
+  dependencies:
+    lodash "^4.17.20"
