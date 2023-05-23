@@ -20,8 +20,8 @@ import CustomSetterSamplePlugin from './plugins/plugin-custom-setter-sample';
 import SetRefPropPlugin from '@alilc/lowcode-plugin-set-ref-prop';
 import LogoSamplePlugin from './plugins/plugin-logo-sample';
 import SimulatorLocalePlugin from './plugins/plugin-simulator-locale';
-import lowcodePlugin from './plugins/plugin-lowcode-component';
-import appHelper from './appHelper';
+// import lowcodePlugin from './plugins/plugin-lowcode-component';
+import appHelper from './appHelper';``
 import './global.scss';
 import PagesManagePlugin from "./plugins/plugin-pages-manage";
 import {loginStore} from "./utils";
@@ -104,7 +104,7 @@ async function registerPlugins() {
   // 设计器区域多语言切换
   await plugins.register(SimulatorLocalePlugin);
 
-  await plugins.register(lowcodePlugin);
+  // await plugins.register(lowcodePlugin);
 
   await plugins.register(PagesManagePlugin)
 }

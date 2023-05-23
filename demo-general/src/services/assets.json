@@ -73,6 +73,19 @@
         "https://alifd.alicdn.com/npm/@alifd/fusion-ui@2.0.2/build/lowcode/view.js",
         "https://alifd.alicdn.com/npm/@alifd/fusion-ui@2.0.2/build/lowcode/view.css"
       ]
+    },
+    {
+      "package": "lowcode-material-biz",
+      "version": "0.1.0",
+      "library": "BizComps",
+      "urls": [
+        "https://unpkg.com/lowcode-material-biz@0.1.0/dist/BizComps.js",
+        "https://unpkg.com/lowcode-material-biz@0.1.0/dist/BizComps.css"
+      ],
+      "editUrls": [
+        "https://unpkg.com/lowcode-material-biz@0.1.0/build/lowcode/view.js",
+        "https://unpkg.com/lowcode-material-biz@0.1.0/build/lowcode/view.css"
+      ]
     }
   ],
   "components": [
@@ -107,6 +120,18 @@
       "urls": {
         "default": "https://alifd.alicdn.com/npm/@alifd/fusion-ui@2.0.2/build/lowcode/meta.js",
         "design": "https://alifd.alicdn.com/npm/@alifd/fusion-ui@2.0.2/build/lowcode/meta.design.js"
+      }
+    },
+    {
+      "exportName": "LowcodeMaterialBizMeta",
+      "npm": {
+        "package": "lowcode-material-biz",
+        "version": "0.1.0"
+      },
+      "url": "https://unpkg.com/lowcode-material-biz@0.1.0/build/lowcode/meta.js",
+      "urls": {
+        "default": "https://unpkg.com/lowcode-material-biz@0.1.0/build/lowcode/meta.js",
+        "design": "https://unpkg.com/lowcode-material-biz@0.1.0/build/lowcode/meta.design.js"
       }
     }
   ],
