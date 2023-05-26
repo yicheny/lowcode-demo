@@ -1,6 +1,6 @@
 import {BaseApi} from "./baseApi";
 
-const UUID = 'crooteyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjcm9vdCIsInN1YiI6Ijk5OTkwIiwiTUZBX0tFWSI6MTY1ODc3NDA1ODY5NjcwNDAwMCwiZXhwIjoxNjg0OTIyMzI4LCJuYmYiOjE2ODQzMTc1Mjh9.Sc4T4KaF4O3or0RRf4HR4l-ObYDYRF2fYYoEnDkpjUo'
+const UUID = 'crooteyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjcm9vdCIsInN1YiI6Ijk5OTkwIiwiTUZBX0tFWSI6MTY2MTkzNzMzMjEzNzIzMDMzNiwiZXhwIjoxNjg1Njc2NTExLCJuYmYiOjE2ODUwNzE3MTF9.FGgKb-clsXkCMsDiTJKsFwWbM7rj-momCDXqCIp4Sgc'
 
 class BizApi extends BaseApi{
     protected getFixedConfig() {
