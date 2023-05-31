@@ -9,7 +9,7 @@ class BizApi extends BaseApi{
             headers:{
                 uuid:UUID
             },
-            baseURL:'http://172.22.7.67:23333/api',
+            baseURL:'http://172.20.1.90:8000/api',
             // proxy: {
             //     protocol: 'http',
             //     host:"172.22.7.67",
