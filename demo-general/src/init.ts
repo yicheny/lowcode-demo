@@ -1,9 +1,12 @@
 import {baseApi, bizApi} from "./utils";
 // @ts-ignore
 import {df} from 'ylf-utils'
+import {BizColumnSetter} from "./setters/BizColumnSetter";
 
 export async function appInit(){
     console.log('appInit start...')
+
+    await registerBizSetters()
 
     await addWindowProps()
 
@@ -31,4 +34,10 @@ async function addWindowProps(){
         bizApi,
         df
     }
+}
+
+async function registerBizSetters(){
+    // @ts-ignore
+    const registerSetter = window.AliLowCodeEngine.setters.registerSetter;
+    registerSetter('BizColumnSetter', BizColumnSetter);
 }
