@@ -42,6 +42,12 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
       setter: "BizColumnSetter",
       title: "标题"
     }
+    items.push({
+      display: 'inline',
+      name: "cell",
+      componentName: 'FunctionSetter',
+      title: "格式化",
+    })
 
     function getObjectByTitle(list:any[],title:string){
       return list.find((c: { title: string; }) => c.title === title)
