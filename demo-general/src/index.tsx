@@ -29,6 +29,7 @@ import React from 'react'
 import ReactDOM from "react-dom";
 import {LoginView} from './views/LoginView'
 import {appInit} from './init'
+import TemplatePagesPlugin from "./plugins/plugin-template-pages";
 
 async function registerPlugins() {
   await plugins.register(InjectPlugin);
@@ -107,6 +108,8 @@ async function registerPlugins() {
   // await plugins.register(lowcodePlugin);
 
   await plugins.register(PagesManagePlugin)
+
+  await plugins.register(TemplatePagesPlugin)
 }
 
 async function lowCodeMain() {
