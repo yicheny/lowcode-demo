@@ -2,6 +2,7 @@ import {baseApi, bizApi} from "./utils";
 // @ts-ignore
 import {df} from 'ylf-utils'
 import {BizColumnSetter} from "./setters/BizColumnSetter";
+import _ from 'lodash'
 
 export async function appInit(){
     console.log('appInit start...')
@@ -38,6 +39,6 @@ async function addWindowProps(){
 
 async function registerBizSetters(){
     // @ts-ignore
-    const registerSetter = window.AliLowCodeEngine.setters.registerSetter;
+    const registerSetter = _.get(window,'AliLowCodeEngine.setters.registerSetter', (bizColumnSetter: string, BizColumnSetter: React.FC<BizColumnSetterProps>)=>{});
     registerSetter('BizColumnSetter', BizColumnSetter);
 }
