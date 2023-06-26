@@ -109,7 +109,7 @@ async function registerPlugins() {
 
   await plugins.register(PagesManagePlugin)
 
-  await plugins.register(TemplatePagesPlugin)
+  // await plugins.register(TemplatePagesPlugin)
 }
 
 async function lowCodeMain() {
