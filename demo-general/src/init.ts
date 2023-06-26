@@ -1,4 +1,4 @@
-import {baseApi, bizApi} from "./utils";
+import {baseApi, bizApi, downCsv} from "./utils";
 // @ts-ignore
 import {df} from 'ylf-utils'
 import {BizColumnSetter} from "./setters/BizColumnSetter";
@@ -33,7 +33,8 @@ async function addWindowProps(){
     window._lib = {
         baseApi,
         bizApi,
-        df
+        df,
+        downCsv
     }
 }
 
