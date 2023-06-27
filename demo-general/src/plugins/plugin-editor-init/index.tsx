@@ -31,6 +31,14 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     // console.log('assets.components', assets.components);
     const proTableCom = getObjectByTitle(assets.components,'高级表格')
     // console.log('proTableCom', proTableCom)
+
+    // proTableCom.configure.props.push({
+    //   display: 'inline',
+    //   title:"类名",
+    //   name:"className",
+    //   setter:"StringSetter"
+    // })
+
     const dataColumnProp = getObjectByTitle(proTableCom.configure.props,'数据列')
     // console.log('dataColumnProp', dataColumnProp)
     const items = _.get(dataColumnProp,'setter.props.itemSetter.props.config.items')
