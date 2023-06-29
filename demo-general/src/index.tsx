@@ -137,12 +137,15 @@ async function loginMain(){
 
 (async function main(){
   await appInit()
-  const loginInfo = loginStore.read()
-  if(loginInfo){
-    //低代码设计器页面渲染
-    await lowCodeMain();
-  }else{
-    //登录页渲染
-    await loginMain()
-  }
+
+  await lowCodeMain();
+
+  // const loginInfo = loginStore.read()
+  // if(loginInfo){
+  //   //低代码设计器页面渲染
+  //   await lowCodeMain();
+  // }else{
+  //   //登录页渲染
+  //   await loginMain()
+  // }
 }())

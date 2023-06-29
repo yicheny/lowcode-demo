@@ -9,7 +9,7 @@ import {useCallback} from "react";
 import {tryExecute} from "../../utils";
 import { message } from 'antd'
 import {project} from "@alilc/lowcode-engine";
-import {pageStore,schemaIdStore} from '../../utils'
+import {pageStore} from '../../utils'
 import _ from 'lodash'
 
 function Save(){
@@ -29,15 +29,11 @@ function useSaveServerSchema(){
 
   return useCallback(()=>{
     tryExecute(async ()=> {
-      const siInfo = project.exportSchema(IPublicEnumTransformStage.Save)
-      const slID = _.get(pageStore.read(),'key')
-      const siID = schemaIdStore.read()
-
-      // console.log(slID, siID, siInfo)
-      if(!slID) throw new Error('请通过 schema管理 选择页面!')
-      if(!siID) throw new Error('缺少schema数据项ID!')
-
-      await doFetch(`/process/schemaInfoSave`,{slID,siID,siInfo:JSON.stringify(siInfo)})
+      const appInfo = _.get(pageStore.read(),'source')
+      if(!appInfo) throw new Error('请选择页面！')
+      const schemaContent =  project.exportSchema(IPublicEnumTransformStage.Save)
+      appInfo.schemaContent = JSON.stringify(schemaContent)
+      await doFetch(`/api/appSchemaInfo/update`,appInfo)
       message.success("Schema保存成功")
     })
   },[])

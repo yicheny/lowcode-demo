@@ -2,26 +2,26 @@ import React, {useCallback} from 'react';
 import {Button, Form, Input, Modal, message} from 'antd';
 import {usePost} from "../../../hooks";
 import {tryExecute} from "../../../utils";
+import {AppInfo} from "../index";
+import {OPEN} from "../../../hooks/useOpen";
 
 type AddModalProps = {
     title:string,
     open:boolean,
     close:() => void,
-    refresh:(itemID:any)=>void,
-    info:{
-        slName?:string,
-        slID?:number,
-        itemID?:number
-    }
+    refresh:(AppInfo:any)=>void,
+    type:OPEN
+    info:AppInfo
 }
 
 export default function AddModal(props:AddModalProps) {
-    const {open,close,title,info={},refresh} = props
+    const {open,close,title,info,refresh,type} = props
     const commit = useCommit(close,refresh)
 
     const onFinish = (values: any) => {
-        info.slName = values.slName
-        commit(info)
+        info.schemaName = values.schemaName
+        info.resource = values.resource
+        commit(type,info)
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -30,7 +30,7 @@ export default function AddModal(props:AddModalProps) {
 
     return <Modal title={title} open={open} centered footer={null} onCancel={close}>
         <Form
-            key={`${info.itemID}_${info.slID}`}
+            key={`${info?.appId}_${info?.version}_${info?.id}`}
             name="basic"
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 16 }}
@@ -41,8 +41,16 @@ export default function AddModal(props:AddModalProps) {
         >
             <Form.Item
                 label="schema名称"
-                name="slName"
+                name="schemaName"
                 rules={[{ required: true, message: '请输入schema名称！' }]}
+            >
+                <Input />
+            </Form.Item>
+
+            <Form.Item
+                label="路由地址"
+                name="resource"
+                rules={[{ required: true, message: '请输入路由地址！' }]}
             >
                 <Input />
             </Form.Item>
@@ -56,14 +64,19 @@ export default function AddModal(props:AddModalProps) {
     </Modal>
 }
 
-function useCommit(close:()=>void,refresh:(itemID:string)=>void){
+function useCommit(close:()=>void,refresh:(appInfo:AppInfo)=>void){
     const {doFetch} = usePost();
 
-    return useCallback((info:any)=>{
+    return useCallback((type:OPEN,info:any)=>{
         tryExecute(async ()=>{
-            await doFetch('/process/schemaListSave',info)
+            const urlMap = {
+                [OPEN.ADD]:'/api/appSchemaConfig/save',
+                [OPEN.EDIT]:'/api/appSchemaConfig/update',
+            }
+            // @ts-ignore
+            await doFetch(urlMap[type],info)
             message.success('提交成功！')
-            refresh(info.itemID)
+            refresh(info)
             close()
         })
     },[])

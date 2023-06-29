@@ -48,7 +48,8 @@ module.exports = ({ onGetWebpackConfig }) => {
     config.devServer.proxy({
       '/low-api': {
         // target:"http://192.168.6.157:8666",
-        target:"http://172.20.1.20:8666/",
+        // target:"http://172.20.1.20:8666/",
+        target:"http://172.20.1.20:19001/",
         secure:false,
         changeOrigin:true,
         pathRewrite:{

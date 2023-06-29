@@ -1,15 +1,22 @@
 import {useCallback, useState} from "react";
 
+export enum OPEN {
+    EMPTY,
+    ADD,
+    EDIT,
+    DEL
+}
+
 type OpenInfo = {
-    type?:number | string
+    type:OPEN
     [key:string]:any
 }
 
-export function useOpen(defaultValue:OpenInfo = {}){
+export function useOpen(defaultValue:OpenInfo = {type:OPEN.EMPTY}){
     const [openInfo,setOpenInfo] = useState(defaultValue)
 
     const close = useCallback(()=>{
-        setOpenInfo({})
+        setOpenInfo({type:OPEN.EMPTY})
     },[])
 
     const checkOpenType = useCallback((type?:number | string)=>{

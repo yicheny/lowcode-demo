@@ -1,62 +1,95 @@
 import * as React from 'react'
+import {useCallback, useEffect, useMemo, useState} from 'react'
 import {IPublicModelPluginContext} from "@alilc/lowcode-types";
-import {useCallback, useEffect, useMemo, useState} from "react";
 import {project} from '@alilc/lowcode-engine';
-import {loginStore, pageStore, projectStore, schemaIdStore, tryExecute, utils} from "../../utils";
-import {List, Select, Input} from 'antd'
-import {MinusCircleOutlined, EditOutlined, PlusCircleOutlined} from '@ant-design/icons'
+import {pageStore, tryExecute, utils} from "../../utils";
+import {Input, List, Select} from 'antd'
+import {EditOutlined, MinusCircleOutlined, PlusCircleOutlined} from '@ant-design/icons'
 import clsx from "clsx";
 import AddModal from "./opeartions/add";
+// @ts-ignore
 import classes from './index.module.scss'
 import {useOpen, usePost} from "../../hooks";
 import DelModal from "./opeartions/del";
 import _ from 'lodash'
 import {saveLocalSchema} from "../../services/mockService";
+import {appStore, envStore} from "../../utils/stores";
+import {OPEN} from "../../hooks/useOpen";
 
 const {Item} = List;
 
 type SLInfo = {
     key: string,
     title: string,
-    // data: any
+    source: any
 }
 
-enum OPEN {
-    ADD,
-    EDIT,
-    DEL
+export type AppInfo = {
+    id:string,
+    appId:string,
+    appName:string,
+    version:string,
+    schemaName:string,
+    schemaId:string,
+    resource:string
 }
+
+type EvnInfo = {
+    label: string,
+    value: string,
+    source: AppInfo[]
+}
+
+const emptyAppInfo = {appId: "", appName: "", id: "", resource: "", schemaId: "", schemaName: "", version: ""}
 
 function PagesManage() {
-    const {active,selectSchema,setActive} = useActive()
-    const [project, setProject] = useState(projectStore.read())
+    const {active, selectSchema} = useSchema()
+    const [envInfo, setEnvInfo] = useState<EvnInfo>(envStore.read())
     const {openInfo, setOpenInfo, checkOpenType, close} = useOpen()
-    const projectList = useProjectList()
-    const {schemaList, refreshSchemaList} = useSchemaList(project,setActive);
+    const envList = useEnvList()
+    // @ts-ignore
+    const versionList = useVersion(envInfo?.source)
+    const {appInfo,setAppInfo} = useAppInfo()
+    const {schemaList, refreshSchemaList} = useSchemaList(appInfo);
     const {filteredList,setFilterKey} = useFilter(schemaList)
+    // useSwitchSchema(project, active)
 
-    useSwitchSchema(project,active)
+    // console.log('appInfo', appInfo)
 
-    const selectProject = (value: string) => {
-        setProject(value)
+    // console.log('schemaList', schemaList)
+
+    const selectEnv = (value: string, items: any) => {
+        // console.log(value,items)
+        setEnvInfo(items)
+        envStore.write(items)
+        setAppInfo(emptyAppInfo)
+    }
+
+    const selectApp = (value: string, items: any) => {
+        // console.log(value,items)
+        setAppInfo(items.source)
     }
 
     const dialogInfo = {
         close,
         info: openInfo.info,
+        type: openInfo.type,
         refresh: refreshSchemaList
     }
 
-    // console.log('render project', project, JSON.stringify(dialogInfo.info))
-    // console.log('active', active)
-
+    // console.log('appInfo',appInfo)
     return <>
         <div style={{marginLeft: 16}}>
-            当前环境：<Select placeholder={'请选择项目'} options={projectList} defaultValue={project}
-                             style={{width: 150}} onChange={selectProject}/>
+            当前环境：<Select placeholder={'请选择项目'} options={envList} style={{width: 150}} value={envInfo?.value}
+                             onChange={selectEnv}/>
+            <br/>
+            环境版本：<Select placeholder={'请选择版本'} options={versionList} style={{width: 150}} value={appInfo?.id}
+                             onChange={selectApp}/>
             <PlusCircleOutlined style={{fontSize: 18, marginLeft: 12}}
-                                onClick={() => setOpenInfo({type: OPEN.ADD, info: {itemID: project,slName:null}})}/> <br/>
-            <Input.Search placeholder={'搜索schema项'} style={{width: 240,marginTop:8}} onChange={(e)=>setFilterKey(e.target.value)}/>
+                                onClick={() => setOpenInfo({type: OPEN.ADD, info: appInfo})}/>
+            <br/>
+            <Input.Search placeholder={'搜索schema项'} style={{width: 240, marginTop: 8}}
+                          onChange={(e) => setFilterKey(e.target.value)}/>
         </div>
         <List dataSource={filteredList} renderItem={(x: SLInfo) => {
             return <Item key={x.key} className={clsx(classes.item, {[classes.active]: active.key === x.key})}
@@ -68,12 +101,12 @@ function PagesManage() {
                 <EditOutlined style={{fontSize: 18, marginLeft: 12}}
                               onClick={() => setOpenInfo({
                                   type: OPEN.EDIT,
-                                  info: {itemID: project,slID:x.key,slName:x.title}
+                                  info: x.source
                               })}/>
                 <MinusCircleOutlined style={{fontSize: 18, marginLeft: 12}}
                                      onClick={() => setOpenInfo({
                                          type: OPEN.DEL,
-                                         info: {itemID: project,slID:x.key,slName:x.title}
+                                         info: x.source
                                      })}/>
             </span>
             </Item>
@@ -84,94 +117,114 @@ function PagesManage() {
     </>
 }
 
-function useSchemaList(itemID: number, setActive: (head: any)=>void) {
+function useSchemaList(appInfo?: AppInfo) {
     const {data, doFetch} = usePost()
 
     const schemaList = useMemo(() => {
-        return _.map(data, x => ({title: x.slName, key: x.slID}))
+        // console.log('data', data)
+        return _.map(data?.appConfigDtoList, x => ({title: x.schemaName, key: x.schemaId, source: x}))
     }, [data])
 
-    const refreshSchemaList = useCallback((itemID) => {
-        // console.log('refreshSchemaList itemID', itemID)
-
+    const refreshSchemaList = useCallback((appInfo) => {
         tryExecute(async () => {
-            if (!itemID) return
-            await doFetch(`/query/schemaListQuery?itemID=${itemID}`)
+            if (!appInfo) return
+            await doFetch(`/api/appSchemaConfigs/query`, {
+                appId: appInfo.appId,
+                version: appInfo.version,
+                pageSize: 9999,
+                pageNum: 1
+            })
         })
     }, [])
 
-    useEffect(()=>{
-        if(itemID === projectStore.read()) return
-        const x = _.head(schemaList) || {key:null,title:null}
-        setActive(x)
-    },[setActive,schemaList])
+    // useEffect(() => {
+    //     if (itemID === projectStore.read()) return
+    //     const x = _.head(schemaList) || {key: null, title: null}
+    //     setActive(x)
+    // }, [setActive, schemaList])
 
-    useEffect(() => refreshSchemaList(itemID), [itemID])
+    useEffect(() => refreshSchemaList(appInfo), [appInfo])
+
+    // console.log('data', data)
 
     return {schemaList, refreshSchemaList}
 }
 
-function useProjectList() {
+function useEnvList() {
     const {data, doFetch} = usePost();
 
     useEffect(() => {
         tryExecute(async () => {
-            const loginInfo = loginStore.read()
-            if (!loginInfo) return
-            await doFetch(`/query/projectListQuery?userID=${loginInfo.userID}`)
+            // const loginInfo = loginStore.read()
+            // if (!loginInfo) return
+            await doFetch(`/api/appConfigInfos/query`)
         })
     }, [])
 
     return useMemo(() => {
-        return _.map(data, x => ({value: x.itemID, label: x.itemName}))
+        // console.log('data', data)
+        return _.map(data, (value, key) => ({value: key, label: key, source: value}))
     }, [data])
 }
 
-function useSwitchSchema(itemID:number,sl:SLInfo) {
-    const {doFetch} = usePost()
-
-    useEffect(() => {
-        tryExecute(async () => {
-            const slID = sl.key
-            if (!slID) return
-            const data = await doFetch(`/query/schemaInfoQuery?slID=${slID}`)
-            // console.log('schema',schema)
-            switchSchema()
-
-            function switchSchema() {
-                projectStore.write(itemID)
-                pageStore.write(sl)
-                schemaIdStore.write(_.get(data,'siID'))
-                const schema = JSON.parse(_.get(data, 'siInfo') as unknown as string)
-                project.importSchema(schema)
-                saveLocalSchema()
+function useVersion(source: AppInfo[]) {
+    return useMemo(() => {
+        return _.map(source, x => {
+            return {
+                label: x.version,
+                value: x.id,
+                source: x
             }
         })
-    }, [itemID,sl])
+    }, [source])
 }
 
-function useFilter(list:SLInfo[]){
-    const [filterKey,setFilterKey] = useState('')
+function useFilter(list: SLInfo[]) {
+    const [filterKey, setFilterKey] = useState('')
 
-    const filteredList = useMemo(()=>{
-        if(utils.isNil(filterKey)) return list;
-        return _.filter(list,x=>{
-            return _.includes(x.title,filterKey)
+    const filteredList = useMemo(() => {
+        if (utils.isNil(filterKey)) return list;
+        return _.filter(list, x => {
+            return _.includes(x.title, filterKey)
         })
-    },[list,filterKey])
+    }, [list, filterKey])
 
-    return {filteredList,setFilterKey}
+    return {filteredList, setFilterKey}
 }
 
-function useActive(){
+function useSchema() {
     const [active, setActive] = useState<SLInfo>(pageStore.read() || {})
+    const {data, doFetch} = usePost()
 
     const selectSchema = useCallback((x: SLInfo) => {
         if (active.key === x.key) return
         setActive(x)
-    },[active])
+        pageStore.write(x)
+    }, [active])
 
-    return {active,selectSchema,setActive}
+    useEffect(() => {
+        tryExecute(async () => {
+            if (!active?.key) return
+            // console.log('active',active)
+            const result = await doFetch(`/api/schemaInfo/query?schemaId=${active.key}`)
+            const schema = JSON.parse(_.get(result, 'schemaContent') as unknown as string)
+            // console.log('schema', schema)
+            project.importSchema(schema)
+            saveLocalSchema()
+        })
+    }, [active])
+
+    return {active, selectSchema}
+}
+
+function useAppInfo(){
+    const [appInfo, setAppInfo] = useState<AppInfo>(appStore.read())
+
+    useEffect(()=>{
+        appStore.write(appInfo)
+    },[appInfo])
+
+    return {appInfo,setAppInfo}
 }
 
 const PagesManagePlugin = (ctx: IPublicModelPluginContext) => {
