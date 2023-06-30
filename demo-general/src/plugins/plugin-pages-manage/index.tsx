@@ -52,7 +52,6 @@ function PagesManage() {
     const {appInfo,setAppInfo} = useAppInfo()
     const {schemaList, refreshSchemaList} = useSchemaList(appInfo);
     const {filteredList,setFilterKey} = useFilter(schemaList)
-    // useSwitchSchema(project, active)
 
     // console.log('appInfo', appInfo)
 
@@ -128,7 +127,7 @@ function useSchemaList(appInfo?: AppInfo) {
     const refreshSchemaList = useCallback((appInfo) => {
         tryExecute(async () => {
             if (!appInfo) return
-            await doFetch(`/api/appSchemaConfigs/query`, {
+            await doFetch(`/appSchemaConfigs/query`, {
                 appId: appInfo.appId,
                 version: appInfo.version,
                 pageSize: 9999,
@@ -157,7 +156,7 @@ function useEnvList() {
         tryExecute(async () => {
             // const loginInfo = loginStore.read()
             // if (!loginInfo) return
-            await doFetch(`/api/appConfigInfos/query`)
+            await doFetch(`/appConfigInfos/query`)
         })
     }, [])
 
@@ -194,7 +193,7 @@ function useFilter(list: SLInfo[]) {
 
 function useSchema() {
     const [active, setActive] = useState<SLInfo>(pageStore.read() || {})
-    const {data, doFetch} = usePost()
+    const {doFetch} = usePost()
 
     const selectSchema = useCallback((x: SLInfo) => {
         if (active.key === x.key) return
@@ -206,7 +205,7 @@ function useSchema() {
         tryExecute(async () => {
             if (!active?.key) return
             // console.log('active',active)
-            const result = await doFetch(`/api/schemaInfo/query?schemaId=${active.key}`)
+            const result = await doFetch(`/schemaInfo/query?schemaId=${active.key}`)
             const schema = JSON.parse(_.get(result, 'schemaContent') as unknown as string)
             // console.log('schema', schema)
             project.importSchema(schema)

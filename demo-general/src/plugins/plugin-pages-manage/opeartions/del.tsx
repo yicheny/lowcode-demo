@@ -25,7 +25,7 @@ function useCommit(close:()=>void,refresh:(appInfo:AppInfo)=>void,){
 
     return useCallback((info:any)=>{
         tryExecute(async ()=>{
-            await doFetch(`/api/appSchemaConfig/remove?id=${info?.id}`)
+            await doFetch(`/appSchemaConfig/remove?id=${info?.id}`)
             message.success('删除成功！')
             refresh(info)
             close()

@@ -70,8 +70,8 @@ function useCommit(close:()=>void,refresh:(appInfo:AppInfo)=>void){
     return useCallback((type:OPEN,info:any)=>{
         tryExecute(async ()=>{
             const urlMap = {
-                [OPEN.ADD]:'/api/appSchemaConfig/save',
-                [OPEN.EDIT]:'/api/appSchemaConfig/update',
+                [OPEN.ADD]:'/appSchemaConfig/save',
+                [OPEN.EDIT]:'/appSchemaConfig/update',
             }
             // @ts-ignore
             await doFetch(urlMap[type],info)

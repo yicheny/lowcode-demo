@@ -1,2 +1,2 @@
 export {useOpen} from './useOpen'
-export {usePost,useGet} from './useFetch'
+export {usePost} from './useFetch'
