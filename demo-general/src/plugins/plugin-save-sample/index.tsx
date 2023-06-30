@@ -33,7 +33,7 @@ function useSaveServerSchema(){
       if(!appInfo) throw new Error('请选择页面！')
       const schemaContent =  project.exportSchema(IPublicEnumTransformStage.Save)
       appInfo.schemaContent = JSON.stringify(schemaContent)
-      await doFetch(`/api/appSchemaInfo/update`,appInfo)
+      await doFetch(`/appSchemaInfo/update`,appInfo)
       message.success("Schema保存成功")
     })
   },[])
