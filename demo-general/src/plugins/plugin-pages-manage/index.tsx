@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useCallback, useEffect, useMemo, useState} from 'react'
 import {IPublicModelPluginContext} from "@alilc/lowcode-types";
 import {project} from '@alilc/lowcode-engine';
-import {pageStore, tryExecute, utils} from "../../utils";
+import {pageStore, tryExecute, utils, appStore, envStore} from "../../utils";
 import {Input, List, Select} from 'antd'
 import {EditOutlined, MinusCircleOutlined, PlusCircleOutlined} from '@ant-design/icons'
 import clsx from "clsx";
@@ -13,7 +13,6 @@ import {useOpen, usePost} from "../../hooks";
 import DelModal from "./opeartions/del";
 import _ from 'lodash'
 import {saveLocalSchema} from "../../services/mockService";
-import {appStore, envStore} from "../../utils/stores";
 import {OPEN} from "../../hooks/useOpen";
 
 const {Item} = List;
