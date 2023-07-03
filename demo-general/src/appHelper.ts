@@ -1,5 +1,5 @@
 import { createFetchHandler } from '@alilc/lowcode-datasource-fetch-handler';
-import {format} from './utils'
+import {format,dateFormat} from './utils'
 
 const appHelper = {
   requestHandlersMap: {
@@ -7,7 +7,8 @@ const appHelper = {
   },
   utils: {
     demoUtil: (...params: any[]) => { console.log(`this is a demoUtil with params ${params}`)},
-    format
+    format,
+    dateFormat
   },
   constants: {
     ConstantA: 'ConstantA',

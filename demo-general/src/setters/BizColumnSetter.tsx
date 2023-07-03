@@ -52,7 +52,7 @@ function useMockOption() {
             {label: "开仓可用", value: '开仓可用', option: {dataIndex: "canOpenAmt", align: "right",width:100, cell:format}},
             {label: "可提取", value: '可提取', option: {dataIndex: "canOutAmt", align: "right",width:100, cell:format}},
             {label: "维持保证金比率", value: '维持保证金比率', option: {dataIndex: "marginAmtRatio", align: "right",width:150, cell:format}},
-            {label: "更新时间", value: '更新时间', option: {dataIndex: "tradeDate",width:100}},
+            {label: "更新时间", value: '更新时间', option: {dataIndex: "tradeDate",width:150,align:'left',cell:formatTradeDate}},
         ]
         // return [
         //     {label: "公司", value: "公司", option: {align: "left", dataIndex: 'company'}},
@@ -67,4 +67,9 @@ function useMockOption() {
 function format(value:any){
     // @ts-ignore
     return this.utils.format.N2(value)
+}
+
+function formatTradeDate(value:any){
+    // @ts-ignore
+    return this.utils.dateFormat.longToYMDHMS(value)
 }
