@@ -31,7 +31,9 @@ export function downCsv(props:downCsvProps){
 
         function formatRowInfo(o:Record<any, any>){
             return _.map(options,option => {
-                return o[option.dataIndex]
+                const value = o[option.dataIndex];
+                const res = option.cell ? option.cell(value) : value;
+                return `"${res}"`
             })
         }
     }
