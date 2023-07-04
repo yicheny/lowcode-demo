@@ -32,30 +32,74 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     const proTableCom = getObjectByTitle(assets.components,'高级表格')
     // console.log('proTableCom', proTableCom)
 
-    // proTableCom.configure.props.push({
-    //   display: 'inline',
-    //   title:"类名",
-    //   name:"className",
-    //   setter:"StringSetter"
-    // })
+    setColumn();
+    addEvents();
+    addControlProps();
 
-    const dataColumnProp = getObjectByTitle(proTableCom.configure.props,'数据列')
-    // console.log('dataColumnProp', dataColumnProp)
-    const items = _.get(dataColumnProp,'setter.props.itemSetter.props.config.items')
-    // console.log('items', items)
-    items[0] = {
-      display: 'inline',
-      isRequired: true,
-      name: "title",
-      setter: "BizColumnSetter",
-      title: "标题"
+    //调整数据列相关设置
+    function setColumn(){
+      const dataColumnProp = getObjectByTitle(proTableCom.configure.props,'数据列')
+      // console.log('dataColumnProp', dataColumnProp)
+      const items = _.get(dataColumnProp,'setter.props.itemSetter.props.config.items')
+      // console.log('items', items)
+      items[0] = {
+        display: 'inline',
+        isRequired: true,
+        name: "title",
+        setter: "BizColumnSetter",
+        title: "标题"
+      }
+      items.push({
+        display: 'inline',
+        name: "cell",
+        componentName: 'FunctionSetter',
+        title: "格式化",
+      })
     }
-    items.push({
-      display: 'inline',
-      name: "cell",
-      componentName: 'FunctionSetter',
-      title: "格式化",
-    })
+
+    //添加事件分组
+    function addEvents(){
+      proTableCom.configure.props.push({
+        name:"events",
+        title:"表格事件集",
+        type:"group",
+        extraProps:{
+          defaultCollapsed: true,
+          display:'accordion'
+        },
+        items: [
+          {
+            display:'inline',
+            // defaultValue:console.log,
+            name:"onSort",
+            componentName: 'FunctionSetter',
+            title:"排序事件"
+          }
+        ]
+      })
+    }
+
+    //------添加受控属性设置-------
+    function addControlProps(){
+      proTableCom.configure.props.push({
+        name:"controlProps",
+        title:"受控属性",
+        type:"group",
+        extraProps:{
+          defaultCollapsed: true,
+          display:'accordion'
+        },
+        items: [
+          {
+            display:'inline',
+            // defaultValue:{counterPartyName:'desc'},
+            name:"sort",
+            componentName: 'ObjectSetter',
+            title:"排序"
+          }
+        ]
+      })
+    }
 
     function getObjectByTitle(list:any[],title:string){
       return list.find((c: { title: string; }) => c.title === title)
