@@ -30,7 +30,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
   function setComponents(assets:any){
     // console.log('assets.components', assets.components);
     const proTableCom = getObjectByTitle(assets.components,'高级表格')
-    // console.log('proTableCom', proTableCom)
+    console.log('proTableCom', proTableCom)
 
     setColumn();
     addEvents();
@@ -86,7 +86,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
         title:"受控属性",
         type:"group",
         extraProps:{
-          defaultCollapsed: true,
+          defaultCollapsed: false,
           display:'accordion'
         },
         items: [
@@ -96,6 +96,14 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
             name:"sort",
             componentName: 'ObjectSetter',
             title:"排序"
+          },
+          {
+            display:'inline',
+            defaultValue:false,
+            name:"useVirtual",
+            componentName: 'BoolSetter',
+            title:"虚拟化",
+            type:'field'
           }
         ]
       })
