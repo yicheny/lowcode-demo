@@ -37,6 +37,7 @@ module.exports = ({ onGetWebpackConfig }) => {
         {
           inject: false,
           templateParameters: {
+
           },
           template: require.resolve('./public/preview.html'),
           filename: 'preview.html',
