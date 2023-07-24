@@ -30,7 +30,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
   function setComponents(assets:any){
     // console.log('assets.components', assets.components);
     const proTableCom = getObjectByTitle(assets.components,'高级表格')
-    console.log('proTableCom', proTableCom)
+    // console.log('proTableCom', proTableCom)
 
     setColumn();
     addEvents();

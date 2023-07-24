@@ -1,40 +1,6 @@
-import * as React from "react";
-import {useCallback, useMemo} from "react";
-import {Select} from '@alifd/next';
-import _ from 'lodash'
+import {useMemo} from "react";
 
-interface BizColumnSetterProps {
-    value: string,
-    onChange: (value: string) => void,
-}
-
-export const BizColumnSetter: React.FC<BizColumnSetterProps> = (props) => {
-    const {value, onChange} = props;
-    const option = useMockOption()
-
-    const handleChange = useCallback((value: string, actionType: string, item: Record<string, any>) => {
-        // console.log('BizColumnSetter:onChange', value, actionType, item);
-        onChange(value)
-        setOption()
-        return null
-
-        function setOption() {
-            _.forEach(item.option, (value, key) => {
-                // @ts-ignore
-                props.field.parent.setPropValue(key, value)
-            })
-        }
-    }, [onChange])
-
-    return <Select
-        showSearch
-        defaultValue={value}
-        onChange={handleChange}
-        dataSource={option}
-    />
-}
-
-function useMockOption() {
+export function useMockOption() {
     return useMemo(() => {
         return [
             {label: "对手方", value: "对手方", option: {dataIndex: "counterPartyName",width:100}},
