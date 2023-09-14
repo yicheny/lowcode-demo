@@ -29,7 +29,6 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
   };
 
   function filterComponents(assets: any) {
-    console.log('assets:', assets);
     assets.components = _.filter(assets?.components, (x) => {
       return (
         x?.group === '业务组件' ||
