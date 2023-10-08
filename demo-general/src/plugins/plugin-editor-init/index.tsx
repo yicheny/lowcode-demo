@@ -19,7 +19,8 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
       // 设置物料描述
       await material.setAssets(await injectAssets(assets));
 
-      setComponents(assets)
+      filterComponents(assets);
+      setComponents(assets);
 
       const schema = await getProjectSchema(scenarioName);
       // 加载 schema
@@ -27,93 +28,108 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     },
   };
 
-  function setComponents(assets:any){
+  function filterComponents(assets: any) {
+    assets.components = _.filter(assets?.components, (x) => {
+      return (
+        x?.group === '业务组件' ||
+        (x?.group === '精选组件' && x?.category === '表格类' && x?.title === '高级表格')
+      );
+    });
+  }
+
+  function setComponents(assets: any) {
     // console.log('assets.components', assets.components);
-    const proTableCom = getObjectByTitle(assets.components,'高级表格')
+    const proTableCom = getObjectByTitle(assets.components, '高级表格');
     // console.log('proTableCom', proTableCom)
 
     setColumn();
     addEvents();
     addControlProps();
+    filterSnippets();
+
+    //保留高级表格
+    function filterSnippets() {
+      proTableCom.snippets = proTableCom.snippets.filter((x: any) => x?.title === '高级表格');
+    }
 
     //调整数据列相关设置
-    function setColumn(){
-      const dataColumnProp = getObjectByTitle(proTableCom.configure.props,'数据列')
+    function setColumn() {
+      const dataColumnProp = getObjectByTitle(proTableCom.configure.props, '数据列');
       // console.log('dataColumnProp', dataColumnProp)
-      const items = _.get(dataColumnProp,'setter.props.itemSetter.props.config.items')
+      const items = _.get(dataColumnProp, 'setter.props.itemSetter.props.config.items');
       // console.log('items', items)
       items[0] = {
         display: 'inline',
         isRequired: true,
-        name: "title",
-        setter: "BizColumnSetter",
-        title: "标题"
-      }
+        name: 'title',
+        setter: 'BizColumnSetter',
+        title: '标题',
+      };
       items.push({
         display: 'inline',
-        name: "cell",
+        name: 'cell',
         componentName: 'FunctionSetter',
-        title: "格式化",
-      })
+        title: '格式化',
+      });
     }
 
     //添加事件分组
-    function addEvents(){
+    function addEvents() {
       proTableCom.configure.props.push({
-        name:"events",
-        title:"表格事件集",
-        type:"group",
-        extraProps:{
+        name: 'events',
+        title: '表格事件集',
+        type: 'group',
+        extraProps: {
           defaultCollapsed: true,
-          display:'accordion'
+          display: 'accordion',
         },
         items: [
           {
-            display:'inline',
+            display: 'inline',
             // defaultValue:console.log,
-            name:"onSort",
+            name: 'onSort',
             componentName: 'FunctionSetter',
-            title:"排序事件"
-          }
-        ]
-      })
+            title: '排序事件',
+          },
+        ],
+      });
     }
 
     //------添加受控属性设置-------
-    function addControlProps(){
+    function addControlProps() {
       proTableCom.configure.props.push({
-        name:"controlProps",
-        title:"受控属性",
-        type:"group",
-        extraProps:{
+        name: 'controlProps',
+        title: '受控属性',
+        type: 'group',
+        extraProps: {
           defaultCollapsed: false,
-          display:'accordion'
+          display: 'accordion',
         },
         items: [
           {
-            display:'inline',
+            display: 'inline',
             // defaultValue:{counterPartyName:'desc'},
-            name:"sort",
+            name: 'sort',
             componentName: 'ObjectSetter',
-            title:"排序"
+            title: '排序',
           },
           {
-            display:'inline',
-            defaultValue:false,
-            name:"useVirtual",
+            display: 'inline',
+            defaultValue: false,
+            name: 'useVirtual',
             componentName: 'BoolSetter',
-            title:"虚拟化",
-            type:'field'
-          }
-        ]
-      })
+            title: '虚拟化',
+            type: 'field',
+          },
+        ],
+      });
     }
 
-    function getObjectByTitle(list:any[],title:string){
-      return list.find((c: { title: string; }) => c.title === title)
+    function getObjectByTitle(list: any[], title: string) {
+      return list.find((c: { title: string }) => c.title === title);
     }
   }
-}
+};
 EditorInitPlugin.pluginName = 'EditorInitPlugin';
 EditorInitPlugin.meta = {
   preferenceDeclaration: {
@@ -133,7 +149,7 @@ EditorInitPlugin.meta = {
         key: 'info',
         type: 'object',
         description: '用于扩展信息',
-      }
+      },
     ],
   },
 };
