@@ -3,6 +3,7 @@ import { injectAssets } from '@alilc/lowcode-plugin-inject';
 import assets from '../../services/assets.json';
 import { getProjectSchema } from '../../services/mockService';
 import _ from 'lodash';
+import {createFormInputSnippets} from "./createFormInputSnippets";
 
 const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
   return {
@@ -21,6 +22,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
 
       filterComponents(assets);
       setComponents(assets);
+      await addComponents(assets);
 
       const schema = await getProjectSchema(scenarioName);
       // 加载 schema
@@ -28,6 +30,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     },
   };
 
+  //过滤物料
   function filterComponents(assets: any) {
     assets.components = _.filter(assets?.components, (x) => {
       return (
@@ -35,6 +38,18 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
         (x?.group === '精选组件' && x?.category === '表格类' && x?.title === '高级表格')
       );
     });
+  }
+
+  //添加物料
+  async function addComponents(assets: any){
+    await addFormInputSnippets()
+
+    //动态添加表单物料
+    async function addFormInputSnippets(){
+      const formInput = getObjectByTitle(assets.components, 'BizFormInput');
+      // console.log('formInput', formInput)
+      formInput.snippets = await createFormInputSnippets()
+    }
   }
 
   function setComponents(assets: any) {
@@ -124,10 +139,10 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
         ],
       });
     }
+  }
 
-    function getObjectByTitle(list: any[], title: string) {
-      return list.find((c: { title: string }) => c.title === title);
-    }
+  function getObjectByTitle(list: any[], title: string) {
+    return list.find((c: { title: string }) => c.title === title);
   }
 };
 EditorInitPlugin.pluginName = 'EditorInitPlugin';

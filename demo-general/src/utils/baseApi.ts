@@ -2,7 +2,7 @@ import axios from 'axios';
 
 type METHOD = 'GET' | 'POST'
 
-type PARAMS = Record<any, any>
+export type PARAMS = Record<any, any>
 
 type CONFIG = {
     method:METHOD,
