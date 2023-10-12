@@ -49,6 +49,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
       const formInput = getObjectByTitle(assets.components, 'BizFormInput');
       // console.log('formInput', formInput)
       formInput.snippets = await createFormInputSnippets()
+      // formInputMetaStore.write(formInput.snippets)
     }
   }
 
