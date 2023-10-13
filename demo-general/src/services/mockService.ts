@@ -5,6 +5,7 @@ import { IPublicTypeProjectSchema, IPublicEnumTransformStage } from '@alilc/lowc
 import DefaultPageSchema from './defaultPageSchema.json';
 import DefaultI18nSchema from './defaultI18nSchema.json';
 import {SCENARIO_NAME} from "../utils/stores";
+import {transformComponentsTree} from "./transformComponentsTree";
 
 const scenarioName = SCENARIO_NAME
 
@@ -59,7 +60,10 @@ export const getProjectSchemaFromLocalStorage = (scenarioName: string) => {
   }
   const localValue = window.localStorage.getItem(getLSName(scenarioName));
   if (localValue) {
-    return JSON.parse(localValue);
+    const schema = JSON.parse(localValue)
+    console.log('getProjectSchemaFromLocalStorage:schema', schema)
+    transformComponentsTree(schema.componentsTree)
+    return schema;
   }
   return undefined;
 }
