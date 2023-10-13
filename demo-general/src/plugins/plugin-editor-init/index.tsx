@@ -36,7 +36,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     assets.components = _.filter(assets?.components, (x) => {
       return (
         x?.group === '业务组件' ||
-        (x?.group === '精选组件' && x?.category === '表格类' && x?.title === '高级表格') || x?.title === '对话框'
+        (x?.group === '精选组件' && x?.category === '表格类' && x?.title === '高级表格') || (x?.group === '精选组件' && x?.title === '对话框')
       );
     });
   }
