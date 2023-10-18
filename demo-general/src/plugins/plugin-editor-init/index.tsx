@@ -4,7 +4,7 @@ import assets from '../../services/assets.json';
 import { getProjectSchema } from '../../services/mockService';
 import _ from 'lodash';
 import {createFormInputSnippets} from "./createFormInputSnippets";
-// import {formInputMetaStore} from "../../utils/stores";
+import {formInputMetaStore} from "../../utils/stores";
 
 const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
   return {
@@ -50,7 +50,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
       const formInput = getObjectByTitle(assets.components, 'BizFormInput');
       // console.log('formInput', formInput)
       formInput.snippets = await createFormInputSnippets()
-      // formInputMetaStore.write(formInput.snippets)
+      formInputMetaStore.write(formInput.snippets)
     }
   }
 
