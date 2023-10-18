@@ -60,6 +60,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     // console.log('proTableCom', proTableCom)
 
     setColumn();
+    addPaginationProps()
     addEvents();
     addControlProps();
     filterSnippets();
@@ -88,6 +89,56 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
         componentName: 'FunctionSetter',
         title: '格式化',
       });
+    }
+
+    //添加分页器设置
+    function addPaginationProps(){
+      const dataPaginationProps = getObjectByTitle(proTableCom.configure.props, '分页器');
+      console.log('dataPaginationProps', dataPaginationProps)
+      const items = _.get(dataPaginationProps, 'setter.props.config.items');
+      console.log('items', items)
+      items.push({
+        name: 'pageSizeSelector',
+        setter:{
+          componentName: "RadioGroupSetter",
+          props:{
+            options:[
+              { 
+                "label": 'false',
+                "value": false,
+              },
+              { 
+                "label": "filter",
+                "value": "filter",
+              },
+              { 
+                "label": "dropdown",
+                "value": "dropdown",
+              },
+            ]
+          },
+        },
+        title: '每页显示选择器可选值',
+        initialValue: 'dropdown'
+      }, {
+        name: "pageSizePosition",
+        title: "每页显示选择器在组件中的位置",
+        setter: {
+        componentName: "SelectSetter",
+          props: {
+            options: [
+              {
+                "title": "start",
+                "value": "start"
+              },
+              {
+                "title": "end",
+                "value": "end"
+              }
+            ]
+          }
+        }
+      },);
     }
 
     //添加事件分组
