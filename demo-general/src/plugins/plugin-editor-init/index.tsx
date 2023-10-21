@@ -3,8 +3,8 @@ import { injectAssets } from '@alilc/lowcode-plugin-inject';
 import assets from '../../services/assets.json';
 import { getProjectSchema } from '../../services/mockService';
 import _ from 'lodash';
-import {createFormInputSnippets} from "./createFormInputSnippets";
-import {formInputMetaStore} from "../../utils/stores";
+import { createFormInputSnippets } from './createFormInputSnippets';
+import { formInputMetaStore } from '../../utils/stores';
 
 const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
   return {
@@ -36,21 +36,22 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     assets.components = _.filter(assets?.components, (x) => {
       return (
         x?.group === '业务组件' ||
-        (x?.group === '精选组件' && x?.category === '表格类' && x?.title === '高级表格') || (x?.group === '精选组件' && x?.title === '对话框')
+        (x?.group === '精选组件' && x?.category === '表格类' && x?.title === '高级表格') ||
+        (x?.group === '精选组件' && x?.title === '对话框')
       );
     });
   }
 
   //添加物料
-  async function addComponents(assets: any){
-    await addFormInputSnippets()
+  async function addComponents(assets: any) {
+    await addFormInputSnippets();
 
     //动态添加表单物料
-    async function addFormInputSnippets(){
+    async function addFormInputSnippets() {
       const formInput = getObjectByTitle(assets.components, 'BizFormInput');
       // console.log('formInput', formInput)
-      formInput.snippets = await createFormInputSnippets()
-      formInputMetaStore.write(formInput.snippets)
+      formInput.snippets = await createFormInputSnippets();
+      formInputMetaStore.write(formInput.snippets);
     }
   }
 
@@ -60,7 +61,8 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     // console.log('proTableCom', proTableCom)
 
     setColumn();
-    addPaginationProps()
+    setActionBarButtons();
+    addPaginationProps();
     addEvents();
     addControlProps();
     filterSnippets();
@@ -68,6 +70,52 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     //保留高级表格
     function filterSnippets() {
       proTableCom.snippets = proTableCom.snippets.filter((x: any) => x?.title === '高级表格');
+      console.log('proTableCom:', proTableCom);
+    }
+
+    //操作栏按钮
+    function setActionBarButtons() {
+      const actionBarProp = getObjectByTitle(proTableCom.configure.props, '操作栏按钮');
+      const items = _.get(actionBarProp, 'setter.props.config.items');
+      items[1] = {
+        name: 'maxCount',
+        title: {
+          label: '可见数量',
+          tip: '超过会收起到”更多“菜单中',
+        },
+        extraProps: {
+          display: 'inline',
+          defaultValue: 3,
+        },
+        setter: {
+          componentName: 'NumberSetter',
+          props: {
+            max: 6,
+            min: 1,
+            defaultValue: 3,
+          },
+        },
+      };
+      // items.push({
+      //   name: 'justify',
+      //   setter: {
+      //     componentName: 'RadioGroupSetter',
+      //     props: {
+      //       options: [
+      //         {
+      //           label: '左',
+      //           value: 'start',
+      //         },
+      //         {
+      //           label: '右',
+      //           value: 'end',
+      //         },
+      //       ],
+      //     },
+      //   },
+      //   title: '对齐',
+      //   initialValue: 'start',
+      // });
     }
 
     //调整数据列相关设置
@@ -92,53 +140,54 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     }
 
     //添加分页器设置
-    function addPaginationProps(){
+    function addPaginationProps() {
       const dataPaginationProps = getObjectByTitle(proTableCom.configure.props, '分页器');
-      console.log('dataPaginationProps', dataPaginationProps)
       const items = _.get(dataPaginationProps, 'setter.props.config.items');
-      console.log('items', items)
-      items.push({
-        name: 'pageSizeSelector',
-        setter:{
-          componentName: "RadioGroupSetter",
-          props:{
-            options:[
-              { 
-                "label": 'false',
-                "value": false,
-              },
-              { 
-                "label": "filter",
-                "value": "filter",
-              },
-              { 
-                "label": "dropdown",
-                "value": "dropdown",
-              },
-            ]
+      items.push(
+        {
+          name: 'pageSizeSelector',
+          setter: {
+            componentName: 'RadioGroupSetter',
+            props: {
+              options: [
+                {
+                  label: 'false',
+                  value: false,
+                },
+                {
+                  label: 'filter',
+                  value: 'filter',
+                },
+                {
+                  label: 'dropdown',
+                  value: 'dropdown',
+                },
+              ],
+            },
+          },
+          title: '每页显示选择器可选值',
+          initialValue: 'dropdown',
+        },
+        {
+          name: 'pageSizePosition',
+          title: '每页显示选择器在组件中的位置',
+          setter: {
+            componentName: 'SelectSetter',
+            props: {
+              options: [
+                {
+                  title: 'start',
+                  value: 'start',
+                },
+                {
+                  title: 'end',
+                  value: 'end',
+                },
+              ],
+            },
           },
         },
-        title: '每页显示选择器可选值',
-        initialValue: 'dropdown'
-      }, {
-        name: "pageSizePosition",
-        title: "每页显示选择器在组件中的位置",
-        setter: {
-        componentName: "SelectSetter",
-          props: {
-            options: [
-              {
-                "title": "start",
-                "value": "start"
-              },
-              {
-                "title": "end",
-                "value": "end"
-              }
-            ]
-          }
-        }
-      },);
+      );
     }
 
     //添加事件分组
