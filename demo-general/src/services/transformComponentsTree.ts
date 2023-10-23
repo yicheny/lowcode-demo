@@ -13,7 +13,7 @@ export function transformComponentsTree(componentsTree: any) {
         const result = new Map();
         _.forEach(snippets,x=>{
             // console.log('x', x)
-            if(x.title === '对手方') console.log(x.schema.props)
+            // if(x.title === '对手方') console.log(x.schema.props)
             result.set(x.schema.props.bindKey, x.schema.props)
         })
         return result

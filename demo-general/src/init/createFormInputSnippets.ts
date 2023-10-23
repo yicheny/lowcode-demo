@@ -1,4 +1,4 @@
-import {lowApi} from "../../utils";
+import {lowApi} from "../utils";
 
 export async function createFormInputSnippets(){
     //"url": 'http://172.20.1.20:19001/api/material/detail/query',

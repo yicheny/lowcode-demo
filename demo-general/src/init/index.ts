@@ -1,8 +1,10 @@
-import {baseApi, bizApi, downCsv} from "./utils";
+import {baseApi, bizApi, downCsv} from "../utils";
 // @ts-ignore
 import {df} from 'ylf-utils'
-import {BizColumnSetter} from "./setters/BizColumnSetter";
+import {BizColumnSetter} from "../setters/BizColumnSetter";
 import _ from 'lodash'
+import {createFormInputSnippets} from "./createFormInputSnippets";
+import {formInputMetaStore} from "../utils/stores";
 
 export async function appInit(){
     console.log('appInit start...')
@@ -10,6 +12,8 @@ export async function appInit(){
     await registerBizSetters()
 
     await addWindowProps()
+
+    await initGlobalData()
 
     // await apiTest();
 
@@ -42,4 +46,9 @@ async function registerBizSetters(){
     // @ts-ignore
     const registerSetter = _.get(window,'AliLowCodeEngine.setters.registerSetter', (bizColumnSetter: string, BizColumnSetter: React.FC<BizColumnSetterProps>)=>{});
     registerSetter('BizColumnSetter', BizColumnSetter);
+}
+
+async function initGlobalData(){
+    const formInputSnippets = await createFormInputSnippets()
+    formInputMetaStore.write(formInputSnippets)
 }
