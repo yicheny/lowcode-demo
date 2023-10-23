@@ -61,7 +61,7 @@ export const getProjectSchemaFromLocalStorage = (scenarioName: string) => {
   const localValue = window.localStorage.getItem(getLSName(scenarioName));
   if (localValue) {
     const schema = JSON.parse(localValue)
-    console.log('getProjectSchemaFromLocalStorage:schema', schema)
+    // console.log('getProjectSchemaFromLocalStorage:schema', schema)
     transformComponentsTree(schema.componentsTree)
     return schema;
   }

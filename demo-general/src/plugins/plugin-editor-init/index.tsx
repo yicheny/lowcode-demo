@@ -3,7 +3,6 @@ import { injectAssets } from '@alilc/lowcode-plugin-inject';
 import assets from '../../services/assets.json';
 import { getProjectSchema } from '../../services/mockService';
 import _ from 'lodash';
-import { createFormInputSnippets } from './createFormInputSnippets';
 import { formInputMetaStore } from '../../utils/stores';
 
 const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
@@ -50,8 +49,8 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     async function addFormInputSnippets() {
       const formInput = getObjectByTitle(assets.components, 'BizFormInput');
       // console.log('formInput', formInput)
-      formInput.snippets = await createFormInputSnippets();
-      formInputMetaStore.write(formInput.snippets);
+      formInput.snippets = formInputMetaStore.read()
+      // console.log('formInput.snippets', formInput.snippets)
     }
   }
 
