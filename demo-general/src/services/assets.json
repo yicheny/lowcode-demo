@@ -86,6 +86,14 @@
         "https://unpkg.com/lowcode-material-biz@0.11.0/build/lowcode/view.js",
         "https://unpkg.com/lowcode-material-biz@0.11.0/build/lowcode/view.css"
       ]
+    },
+    {
+      "package": "override-fu",
+      "version": "0.1.2",
+      "library": "OverrideFu",
+      "urls": [
+        "https://unpkg.com/override-fu@0.1.2/override.css"
+      ]
     }
   ],
   "components": [

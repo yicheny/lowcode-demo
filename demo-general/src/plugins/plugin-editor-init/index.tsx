@@ -96,26 +96,30 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
           },
         },
       };
-      // items.push({
-      //   name: 'justify',
-      //   setter: {
-      //     componentName: 'RadioGroupSetter',
-      //     props: {
-      //       options: [
-      //         {
-      //           label: '左',
-      //           value: 'start',
-      //         },
-      //         {
-      //           label: '右',
-      //           value: 'end',
-      //         },
-      //       ],
-      //     },
-      //   },
-      //   title: '对齐',
-      //   initialValue: 'start',
-      // });
+      items.push({
+        name: 'justify',
+        setter: {
+          componentName: 'RadioGroupSetter',
+          props: {
+            options: [
+              {
+                label: '左',
+                value: 'start',
+              },
+              {
+                label: '中',
+                value: 'center',
+              },
+              {
+                label: '右',
+                value: 'end',
+              },
+            ],
+          },
+        },
+        title: '对齐',
+        initialValue: 'start',
+      });
     }
 
     //调整数据列相关设置
