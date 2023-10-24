@@ -4,7 +4,8 @@ import {df} from 'ylf-utils'
 import {BizColumnSetter} from "../setters/BizColumnSetter";
 import _ from 'lodash'
 import {createFormInputSnippets} from "./createFormInputSnippets";
-import {formInputMetaStore} from "../utils/stores";
+import {formInputMetaStore, TableMetaStore} from "../utils/stores";
+import {createTableOptions} from "./createTableOptions";
 
 export async function appInit(){
     console.log('appInit start...')
@@ -51,4 +52,7 @@ async function registerBizSetters(){
 async function initGlobalData(){
     const formInputSnippets = await createFormInputSnippets()
     formInputMetaStore.write(formInputSnippets)
+    const tableMeta = await createTableOptions()
+    // console.log('tableMeta', tableMeta)
+    TableMetaStore.write(tableMeta)
 }
