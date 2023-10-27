@@ -131,7 +131,7 @@
       }
     },
     {
-      "exportName": "LowcodeMaterialBizMeta",
+      "exportName": "RootLowcodeMaterialBizMeta",
       "npm": {
         "package": "root-lowcode-material-biz",
         "version": "0.12.0"
