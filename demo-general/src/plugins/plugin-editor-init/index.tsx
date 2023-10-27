@@ -69,7 +69,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
     //保留高级表格
     function filterSnippets() {
       proTableCom.snippets = proTableCom.snippets.filter((x: any) => x?.title === '高级表格');
-      console.log('proTableCom:', proTableCom);
+      // console.log('proTableCom:', proTableCom);
     }
 
     //操作栏按钮
