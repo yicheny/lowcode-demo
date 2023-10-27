@@ -1,13 +1,16 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import { injectAssets } from '@alilc/lowcode-plugin-inject';
-import assets from '../../services/assets.json';
+// import assets from '../../services/assets.json';
 import { getProjectSchema } from '../../services/mockService';
 import _ from 'lodash';
-import { formInputMetaStore } from '../../utils/stores';
+import {AssertsStore, formInputMetaStore} from '../../utils/stores';
 
 const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
   return {
     async init() {
+      const assets = AssertsStore.read()
+      // console.log('assets', assets)
+
       const { material, project, config } = ctx;
       const scenarioName = options['scenarioName'];
       const scenarioDisplayName = options['displayName'] || scenarioName;
@@ -25,6 +28,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
       await addComponents(assets);
 
       const schema = await getProjectSchema(scenarioName);
+      dynamicBizMaterial(schema.componentsMap)
       // 加载 schema
       project.importSchema(schema as any);
     },
@@ -274,3 +278,14 @@ EditorInitPlugin.meta = {
   },
 };
 export default EditorInitPlugin;
+
+//TODO 动态设置业务物料库--临时方案
+function dynamicBizMaterial(componentsMap: any){
+  _.forEach(componentsMap, x=>{
+    if(x.package === 'lowcode-material-biz'){
+      x.package = 'root-lowcode-material-biz';
+      x.version = '0.12.0';
+    }
+  })
+
+}
