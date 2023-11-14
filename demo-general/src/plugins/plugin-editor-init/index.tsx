@@ -215,6 +215,12 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
             componentName: 'FunctionSetter',
             title: '排序事件',
           },
+          {
+            display: 'inline',
+            name:"rowSelection.onChange",
+            componentName: 'FunctionSetter',
+            title: '选择事件'
+          }
         ],
       });
     }
@@ -287,5 +293,4 @@ function dynamicBizMaterial(componentsMap: any){
       x.version = '0.12.0';
     }
   })
-
 }
