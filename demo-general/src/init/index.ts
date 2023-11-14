@@ -7,6 +7,7 @@ import {createFormInputSnippets} from "./createFormInputSnippets";
 import {AssertsStore, formInputMetaStore, TableMetaStore} from "../utils/stores";
 import {createTableOptions} from "./createTableOptions";
 import {createAsserts} from "./createAsserts";
+// import {saveAsserts} from "./saveAsserts";
 
 export async function appInit(){
     console.log('appInit start...')

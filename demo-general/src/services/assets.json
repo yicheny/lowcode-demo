@@ -76,15 +76,15 @@
     },
     {
       "package": "root-lowcode-material-biz",
-      "version": "0.12.0",
+      "version": "0.13.0",
       "library": "BizComps",
       "urls": [
-        "https://unpkg.com/root-lowcode-material-biz@0.12.0/dist/BizComps.js",
-        "https://unpkg.com/root-lowcode-material-biz@0.12.0/dist/BizComps.css"
+        "https://unpkg.com/root-lowcode-material-biz@0.13.0/dist/BizComps.js",
+        "https://unpkg.com/root-lowcode-material-biz@0.13.0/dist/BizComps.css"
       ],
       "editUrls": [
-        "https://unpkg.com/root-lowcode-material-biz@0.12.0/build/lowcode/view.js",
-        "https://unpkg.com/root-lowcode-material-biz@0.12.0/build/lowcode/view.css"
+        "https://unpkg.com/root-lowcode-material-biz@0.13.0/build/lowcode/view.js",
+        "https://unpkg.com/root-lowcode-material-biz@0.13.0/build/lowcode/view.css"
       ]
     },
     {
@@ -134,12 +134,12 @@
       "exportName": "RootLowcodeMaterialBizMeta",
       "npm": {
         "package": "root-lowcode-material-biz",
-        "version": "0.12.0"
+        "version": "0.13.0"
       },
-      "url": "https://unpkg.com/root-lowcode-material-biz@0.12.0/build/lowcode/meta.js",
+      "url": "https://unpkg.com/root-lowcode-material-biz@0.13.0/build/lowcode/meta.js",
       "urls": {
-        "default": "https://unpkg.com/root-lowcode-material-biz@0.12.0/build/lowcode/meta.js",
-        "design": "https://unpkg.com/root-lowcode-material-biz@0.12.0/build/lowcode/meta.design.js"
+        "default": "https://unpkg.com/root-lowcode-material-biz@0.13.0/build/lowcode/meta.js",
+        "design": "https://unpkg.com/root-lowcode-material-biz@0.13.0/build/lowcode/meta.design.js"
       }
     }
   ],
