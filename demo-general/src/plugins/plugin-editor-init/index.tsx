@@ -290,7 +290,7 @@ function dynamicBizMaterial(componentsMap: any){
   _.forEach(componentsMap, x=>{
     if(x.package === 'lowcode-material-biz'){
       x.package = 'root-lowcode-material-biz';
-      x.version = '0.15.0';
+      x.version = '0.16.0';
     }
   })
 }

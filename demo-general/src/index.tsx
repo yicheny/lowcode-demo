@@ -15,7 +15,7 @@ import ComponentPanelPlugin from '@alilc/lowcode-plugin-components-pane';
 import DefaultSettersRegistryPlugin from './plugins/plugin-default-setters-registry';
 // import LoadIncrementalAssetsWidgetPlugin from './plugins/plugin-load-incremental-assets-widget';
 import SaveSamplePlugin from './plugins/plugin-save-sample';
-// import PreviewSamplePlugin from './plugins/plugin-preview-sample';
+import PreviewSamplePlugin from './plugins/plugin-preview-sample';
 import CustomSetterSamplePlugin from './plugins/plugin-custom-setter-sample';
 import SetRefPropPlugin from '@alilc/lowcode-plugin-set-ref-prop';
 import LogoSamplePlugin from './plugins/plugin-logo-sample';
@@ -103,7 +103,7 @@ async function registerPlugins() {
   await plugins.register(SaveSamplePlugin);
 
   //预览
-  // await plugins.register(PreviewSamplePlugin);
+  await plugins.register(PreviewSamplePlugin);
 
   await plugins.register(CustomSetterSamplePlugin);
 
