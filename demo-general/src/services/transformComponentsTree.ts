@@ -38,7 +38,7 @@ export function transformComponentsTree(componentsTree: any) {
                 if (!key) throw new Error(`BizFormInput组件未绑定key!`)
                 const props = snippetsMap.get(key);
                 // console.log('key', x.props.nameChinese, key, props)
-                _.assign(x.props, props);
+                _.defaults(x.props, props);
             })
         }
     }
@@ -80,7 +80,7 @@ export function transformComponentsTree(componentsTree: any) {
                     // console.log(c);
                     // console.log('dataIndex', c.dataIndex, optionsMap.get(c.dataIndex))
                     const dynamicColumn = optionsMap.get(c.dataIndex)
-                    _.assign(c,dynamicColumn)
+                    _.defaults(c,dynamicColumn)
                 })
 
             })
