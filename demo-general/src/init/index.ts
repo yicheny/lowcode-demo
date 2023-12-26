@@ -7,7 +7,9 @@ import {createFormInputSnippets} from "./createFormInputSnippets";
 import {AssertsStore, formInputMetaStore, TableMetaStore} from "../utils/stores";
 import {createTableOptions} from "./createTableOptions";
 import {createAsserts} from "./createAsserts";
-// import {saveAsserts} from "./saveAsserts";
+import {saveAsserts} from "./saveAsserts";
+
+const UPDATE_ASSERTS = false
 
 export async function appInit(){
     console.log('appInit start...')
@@ -60,7 +62,7 @@ async function initGlobalData(){
     // console.log('tableMeta', tableMeta)
     TableMetaStore.write(tableMeta)
 
-    // await saveAsserts()
+    if(UPDATE_ASSERTS) await saveAsserts()
     const asserts = await createAsserts();
     // console.log('asserts', asserts)
     AssertsStore.write(asserts)

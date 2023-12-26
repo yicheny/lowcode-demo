@@ -40,7 +40,7 @@ export default function AddModal(props:AddModalProps) {
             autoComplete="off"
         >
             <Form.Item
-                label="schema名称"
+                label="名称"
                 name="schemaName"
                 rules={[{ required: true, message: '请输入schema名称！' }]}
             >
@@ -54,6 +54,21 @@ export default function AddModal(props:AddModalProps) {
             >
                 <Input />
             </Form.Item>
+
+            {/*<Form.Item
+                label="模板"
+                name="template"
+                rules={[{ required: true, message: '请选择模板页！' }]}
+            >
+                <Select defaultValue="searchPage"
+                        onChange={()=>{}}
+                        options={[
+                                { label: '查询页', value: 'searchPage' },
+                                { label: '测试页1', value: 'testPage1' },
+                                { label: '测试页2', value: 'testPage2' },
+                                { label: '测试页3', value: 'testPage3' },
+                            ]}/>
+            </Form.Item>*/}
 
             <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
                 <Button type="primary" htmlType="submit">

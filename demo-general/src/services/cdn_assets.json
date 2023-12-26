@@ -79,12 +79,12 @@
       "version": "0.17.0",
       "library": "BizComps",
       "urls": [
-        "http://172.20.0.175:9000/lowcode/0.17.0/BizComps.js",
-        "http://172.20.0.175:9000/lowcode/0.17.0/BizComps.css"
+        "https://unpkg.com/root-lowcode-material-biz@0.17.0/dist/BizComps.js",
+        "https://unpkg.com/root-lowcode-material-biz@0.17.0/dist/BizComps.css"
       ],
       "editUrls": [
-        "http://172.20.0.175:9000/lowcode/0.17.0/lowcode_view.js",
-        "http://172.20.0.175:9000/lowcode/0.17.0/lowcode_view.css"
+        "https://unpkg.com/root-lowcode-material-biz@0.17.0/build/lowcode/view.js",
+        "https://unpkg.com/root-lowcode-material-biz@0.17.0/build/lowcode/view.css"
       ]
     },
     {
@@ -92,7 +92,7 @@
       "version": "0.1.2",
       "library": "OverrideFu",
       "urls": [
-        "http://172.20.0.175:9000/lowcode/override.css"
+        "https://unpkg.com/override-fu@0.1.2/override.css"
       ]
     }
   ],
@@ -136,10 +136,10 @@
         "package": "root-lowcode-material-biz",
         "version": "0.17.0"
       },
-      "url": "http://172.20.0.175:9000/lowcode/0.17.0/meta.js",
+      "url": "https://unpkg.com/root-lowcode-material-biz@0.17.0/build/lowcode/meta.js",
       "urls": {
-        "default": "http://172.20.0.175:9000/lowcode/0.17.0/meta.js",
-        "design": "http://172.20.0.175:9000/lowcode/0.17.0/meta.design.js"
+        "default": "https://unpkg.com/root-lowcode-material-biz@0.17.0/build/lowcode/meta.js",
+        "design": "https://unpkg.com/root-lowcode-material-biz@0.17.0/build/lowcode/meta.design.js"
       }
     }
   ],
