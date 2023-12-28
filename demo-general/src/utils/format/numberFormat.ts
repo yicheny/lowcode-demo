@@ -5,7 +5,7 @@ export function numberFormat(format: string){
         if(isInfiniteNumber(value)) return '-'
         const t = format.charAt(0);
         const n = _.toInteger(format.charAt(1));
-        if(t==='N') return custom_format(value.toFixed(n));
+        if(t==='N') return custom_format(Number(value).toFixed(n));
         return value.toString()
     }
 }
