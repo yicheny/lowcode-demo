@@ -59,200 +59,272 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
   }
 
   function setComponents(assets: any) {
-    // console.log('assets.components', assets.components);
-    const proTableCom = getObjectByTitle(assets.components, '高级表格');
-    // console.log('proTableCom', proTableCom)
+    setTable()
+    setFormInput()
 
-    setColumn();
-    setActionBarButtons();
-    addPaginationProps();
-    addEvents();
-    addControlProps();
-    filterSnippets();
+    function setTable(){
+      // console.log('assets.components', assets.components);
+      const proTableCom = getObjectByTitle(assets.components, '高级表格');
+      // console.log('proTableCom', proTableCom)
 
-    //保留高级表格
-    function filterSnippets() {
-      proTableCom.snippets = proTableCom.snippets.filter((x: any) => x?.title === '高级表格');
-      // console.log('proTableCom:', proTableCom);
-    }
+      setColumn();
+      setActionBarButtons();
+      addPaginationProps();
+      addEvents();
+      addControlProps();
+      filterSnippets();
 
-    //操作栏按钮
-    function setActionBarButtons() {
-      const actionBarProp = getObjectByTitle(proTableCom.configure.props, '操作栏按钮');
-      const items = _.get(actionBarProp, 'setter.props.config.items');
-      items[1] = {
-        name: 'maxCount',
-        title: {
-          label: '可见数量',
-          tip: '超过会收起到”更多“菜单中',
-        },
-        extraProps: {
-          display: 'inline',
-          defaultValue: 3,
-        },
-        setter: {
-          componentName: 'NumberSetter',
-          props: {
-            max: 6,
-            min: 1,
+      //保留高级表格
+      function filterSnippets() {
+        proTableCom.snippets = proTableCom.snippets.filter((x: any) => x?.title === '高级表格');
+        // console.log('proTableCom:', proTableCom);
+      }
+
+      //操作栏按钮
+      function setActionBarButtons() {
+        const actionBarProp = getObjectByTitle(proTableCom.configure.props, '操作栏按钮');
+        const items = _.get(actionBarProp, 'setter.props.config.items');
+        items[1] = {
+          name: 'maxCount',
+          title: {
+            label: '可见数量',
+            tip: '超过会收起到”更多“菜单中',
+          },
+          extraProps: {
+            display: 'inline',
             defaultValue: 3,
           },
-        },
-      };
-      items.push({
-        name: 'justify',
-        setter: {
-          componentName: 'RadioGroupSetter',
-          props: {
-            options: [
-              {
-                label: '左',
-                value: 'start',
-              },
-              {
-                label: '中',
-                value: 'center',
-              },
-              {
-                label: '右',
-                value: 'end',
-              },
-            ],
+          setter: {
+            componentName: 'NumberSetter',
+            props: {
+              max: 6,
+              min: 1,
+              defaultValue: 3,
+            },
           },
-        },
-        title: '对齐',
-        initialValue: 'start',
-      });
-    }
-
-    //调整数据列相关设置
-    function setColumn() {
-      const dataColumnProp = getObjectByTitle(proTableCom.configure.props, '数据列');
-      // console.log('dataColumnProp', dataColumnProp)
-      const items = _.get(dataColumnProp, 'setter.props.itemSetter.props.config.items');
-      // console.log('items', items)
-      items[0] = {
-        display: 'inline',
-        isRequired: true,
-        name: 'title',
-        setter: 'BizColumnSetter',
-        title: '标题',
-      };
-      items.push({
-        display: 'inline',
-        name: 'cell',
-        componentName: 'FunctionSetter',
-        title: '格式化',
-      });
-    }
-
-    //添加分页器设置
-    function addPaginationProps() {
-      const dataPaginationProps = getObjectByTitle(proTableCom.configure.props, '分页器');
-      const items = _.get(dataPaginationProps, 'setter.props.config.items');
-      items.push(
-        {
-          name: 'pageSizeSelector',
+        };
+        items.push({
+          name: 'justify',
           setter: {
             componentName: 'RadioGroupSetter',
             props: {
               options: [
                 {
-                  label: 'false',
-                  value: false,
-                },
-                {
-                  label: 'filter',
-                  value: 'filter',
-                },
-                {
-                  label: 'dropdown',
-                  value: 'dropdown',
-                },
-              ],
-            },
-          },
-          title: '每页显示选择器可选值',
-          initialValue: 'dropdown',
-        },
-        {
-          name: 'pageSizePosition',
-          title: '每页显示选择器在组件中的位置',
-          setter: {
-            componentName: 'SelectSetter',
-            props: {
-              options: [
-                {
-                  title: 'start',
+                  label: '左',
                   value: 'start',
                 },
                 {
-                  title: 'end',
+                  label: '中',
+                  value: 'center',
+                },
+                {
+                  label: '右',
                   value: 'end',
                 },
               ],
             },
           },
-        },
-      );
+          title: '对齐',
+          initialValue: 'start',
+        });
+      }
+
+      //调整数据列相关设置
+      function setColumn() {
+        const dataColumnProp = getObjectByTitle(proTableCom.configure.props, '数据列');
+        // console.log('dataColumnProp', dataColumnProp)
+        const items = _.get(dataColumnProp, 'setter.props.itemSetter.props.config.items');
+        // console.log('items', items)
+        items[0] = {
+          display: 'inline',
+          isRequired: true,
+          name: 'title',
+          setter: 'BizColumnSetter',
+          title: '标题',
+        };
+        items.push({
+          display: 'inline',
+          name: 'cell',
+          componentName: 'FunctionSetter',
+          title: '格式化',
+        });
+      }
+
+      //添加分页器设置
+      function addPaginationProps() {
+        const dataPaginationProps = getObjectByTitle(proTableCom.configure.props, '分页器');
+        const items = _.get(dataPaginationProps, 'setter.props.config.items');
+        items.push(
+            {
+              name: 'pageSizeSelector',
+              setter: {
+                componentName: 'RadioGroupSetter',
+                props: {
+                  options: [
+                    {
+                      label: 'false',
+                      value: false,
+                    },
+                    {
+                      label: 'filter',
+                      value: 'filter',
+                    },
+                    {
+                      label: 'dropdown',
+                      value: 'dropdown',
+                    },
+                  ],
+                },
+              },
+              title: '每页显示选择器可选值',
+              initialValue: 'dropdown',
+            },
+            {
+              name: 'pageSizePosition',
+              title: '每页显示选择器在组件中的位置',
+              setter: {
+                componentName: 'SelectSetter',
+                props: {
+                  options: [
+                    {
+                      title: 'start',
+                      value: 'start',
+                    },
+                    {
+                      title: 'end',
+                      value: 'end',
+                    },
+                  ],
+                },
+              },
+            },
+        );
+      }
+
+      //添加事件分组
+      function addEvents() {
+        proTableCom.configure.props.push({
+          name: 'events',
+          title: '表格事件集',
+          type: 'group',
+          extraProps: {
+            defaultCollapsed: true,
+            display: 'accordion',
+          },
+          items: [
+            {
+              display: 'inline',
+              // defaultValue:console.log,
+              name: 'onSort',
+              componentName: 'FunctionSetter',
+              title: '排序事件',
+            },
+            {
+              display: 'inline',
+              name:"rowSelection.onChange",
+              componentName: 'FunctionSetter',
+              title: '选择事件'
+            }
+          ],
+        });
+      }
+
+      //------添加受控属性设置-------
+      function addControlProps() {
+        proTableCom.configure.props.push({
+          name: 'controlProps',
+          title: '受控属性',
+          type: 'group',
+          extraProps: {
+            defaultCollapsed: false,
+            display: 'accordion',
+          },
+          items: [
+            {
+              display: 'inline',
+              // defaultValue:{counterPartyName:'desc'},
+              name: 'sort',
+              componentName: 'ObjectSetter',
+              title: '排序',
+            },
+            {
+              display: 'inline',
+              defaultValue: false,
+              name: 'useVirtual',
+              componentName: 'BoolSetter',
+              title: '虚拟化',
+              type: 'field',
+            },
+          ],
+        });
+      }
     }
 
-    //添加事件分组
-    function addEvents() {
-      proTableCom.configure.props.push({
-        name: 'events',
-        title: '表格事件集',
-        type: 'group',
-        extraProps: {
-          defaultCollapsed: true,
-          display: 'accordion',
+    function  setFormInput(){
+      const com = getObjectByTitle(assets.components, 'BizFormInput');
+      // console.log('com', com)
+      _.setWith(com,'configure.props[1].setter.props.options',[
+        {
+          "label": "按钮",
+          "value": "Button"
         },
-        items: [
-          {
-            display: 'inline',
-            // defaultValue:console.log,
-            name: 'onSort',
-            componentName: 'FunctionSetter',
-            title: '排序事件',
-          },
-          {
-            display: 'inline',
-            name:"rowSelection.onChange",
-            componentName: 'FunctionSetter',
-            title: '选择事件'
-          }
-        ],
-      });
-    }
-
-    //------添加受控属性设置-------
-    function addControlProps() {
-      proTableCom.configure.props.push({
-        name: 'controlProps',
-        title: '受控属性',
-        type: 'group',
-        extraProps: {
-          defaultCollapsed: false,
-          display: 'accordion',
+        {
+          "label": "复选按钮",
+          "value": "CheckboxGroup"
         },
-        items: [
-          {
-            display: 'inline',
-            // defaultValue:{counterPartyName:'desc'},
-            name: 'sort',
-            componentName: 'ObjectSetter',
-            title: '排序',
-          },
-          {
-            display: 'inline',
-            defaultValue: false,
-            name: 'useVirtual',
-            componentName: 'BoolSetter',
-            title: '虚拟化',
-            type: 'field',
-          },
-        ],
-      });
+        {
+          "label": "日期",
+          "value": "DatePicker"
+        },
+        {
+          "label": "日期范围",
+          "value": "DatePickerRange"
+        },
+        {
+          "label": "高精度数字框",
+          "value": "HighPrecisionInput"
+        },
+        {
+          "label": "输入",
+          "value": "Input"
+        },
+        {
+          "label": "月份控件-单点",
+          "value": "MonthPicker"
+        },
+        {
+          "label": "月份控件-范围",
+          "value": "MonthPickerRange"
+        },
+        {
+          "label": "下拉多选",
+          "value": "MulSelect"
+        },
+        {
+          "label": "数字输入",
+          "value": "NumberInput"
+        },
+        {
+          "label": "单选按钮",
+          "value": "RadioGroup"
+        },
+        {
+          "label": "下拉单选",
+          "value": "Select"
+        },
+        {
+          "label": "切换按钮",
+          "value": "SwitchButton"
+        },
+        {
+          "label": "时间控件-单点",
+          "value": "TimePicker"
+        },
+        {
+          "label": "时间控件-范围",
+          "value": "TimePickerRange"
+        }
+      ])
     }
   }
 
