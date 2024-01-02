@@ -1,9 +1,15 @@
 import {BaseApi, PARAMS} from "./baseApi";
+import {loginStore} from "./stores";
 
 class LowApi extends BaseApi{
     protected getFixedConfig() {
+        const userInfo = loginStore.read()
+        // console.log('userInfo', userInfo)
         return {
             ...super.getFixedConfig(),
+            headers:{
+                'User-Id': userInfo?.userId
+            },
             baseURL:'/low-api',
         }
     }

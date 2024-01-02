@@ -31,6 +31,8 @@ import ReactDOM from 'react-dom';
 import { LoginView } from './views/LoginView';
 import { appInit } from './init';
 import TemplatePagesPlugin from './plugins/plugin-template-pages';
+import {loginStore} from "./utils";
+import QuitLoginPlugin from "./plugins/piugin-quit-login";
 // import { test } from './test';
 
 async function registerPlugins() {
@@ -102,6 +104,8 @@ async function registerPlugins() {
 
   await plugins.register(SaveSamplePlugin);
 
+  await plugins.register(QuitLoginPlugin);
+
   //预览
   await plugins.register(PreviewSamplePlugin);
 
@@ -145,14 +149,14 @@ async function loginMain() {
 
   await appInit();
 
-  await lowCodeMain();
+  // await lowCodeMain();
 
-  // const loginInfo = loginStore.read()
-  // if(loginInfo){
-  //   //低代码设计器页面渲染
-  //   await lowCodeMain();
-  // }else{
-  //   //登录页渲染
-  //   await loginMain()
-  // }
+  const loginInfo = loginStore.read()
+  if(loginInfo){
+    //低代码设计器页面渲染
+    await lowCodeMain();
+  }else{
+    //登录页渲染
+    await loginMain()
+  }
 })();

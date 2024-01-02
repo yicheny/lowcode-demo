@@ -8,7 +8,7 @@ export const LoginView = () => {
     const onFinish = (values: any) => {
         // console.log('Success:', values);
         tryExecute(async ()=>{
-            const infos = await doFetch(`/user/logIn`, values)
+            const infos = await doFetch(`/user/login`, values)
             // console.log('infos', infos)
             loginStore.write(infos)
             window.location.reload();
@@ -31,7 +31,7 @@ export const LoginView = () => {
         >
             <Form.Item
                 label="账号"
-                name="userID"
+                name="userId"
                 rules={[{ required: true, message: '请输入账号！' }]}
             >
                 <Input />
@@ -39,7 +39,7 @@ export const LoginView = () => {
 
             <Form.Item
                 label="密码"
-                name="userPwd"
+                name="password"
                 rules={[{ required: true, message: '请输入密码！' }]}
             >
                 <Input.Password />
@@ -47,7 +47,7 @@ export const LoginView = () => {
 
             <Form.Item wrapperCol={{ offset: 4, span: 18 }}>
                 <Button type="primary" htmlType="submit">
-                    提交
+                    登录
                 </Button>
             </Form.Item>
         </Form>
