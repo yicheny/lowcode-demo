@@ -33,6 +33,7 @@ import { appInit } from './init';
 import TemplatePagesPlugin from './plugins/plugin-template-pages';
 import {loginStore} from "./utils";
 import QuitLoginPlugin from "./plugins/piugin-quit-login";
+import MenuManagePlugin from "./plugins/plugin-menu-manage";
 // import { test } from './test';
 
 async function registerPlugins() {
@@ -119,6 +120,8 @@ async function registerPlugins() {
   await plugins.register(PagesManagePlugin);
 
   await plugins.register(TemplatePagesPlugin);
+
+  await plugins.register(MenuManagePlugin);
 }
 
 async function lowCodeMain() {
