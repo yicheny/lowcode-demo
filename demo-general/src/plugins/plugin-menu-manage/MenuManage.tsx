@@ -1,22 +1,23 @@
-import React, {ReactNode, useCallback, useMemo, useState} from "react";
+import React, {ReactNode, useCallback, useEffect, useMemo, useState} from "react";
 import {Input, Menu, Button} from "antd";
 import _ from 'lodash'
 import {
     PlusOutlined,
     AppstoreAddOutlined
 } from '@ant-design/icons';
+import {usePost} from "../../hooks";
 
 const fontSize = 16;
 
 export function MenuManage(){
     const [key,setKey] = useState('')
-    const {renderItems,filterItems} = useMockItems()
+    const {renderItems,filterItems} = useItems()
 
     const fis = filterItems(key)
 
-    // console.log('fi', fi)
+    // console.log('fis', fis)
 
-    return <div>
+    return <div style={{height:'100%',overflow:"hidden"}}>
         <div style={{display:'flex',alignItems:'center'}}>
             <Input.Search placeholder={'请输入……'}
                           allowClear
@@ -24,11 +25,15 @@ export function MenuManage(){
                           onChange={x => setKey(x.target.value)}/>
             <IconButton icon={<PlusOutlined style={{fontSize}}/>}/>
         </div>
-        <Menu className={'nav-menu'} items={fis || renderItems} defaultSelectedKeys={['home']} mode={'inline'}/>
+        <Menu className={'nav-menu'}
+              style={{height:'100%',overflow:'auto'}}
+              items={fis || renderItems}
+              defaultSelectedKeys={['home']}
+              mode={'inline'}/>
     </div>
 }
 
-function useMockItems(){
+function useMockTreeItems(){
     const treeItems = useMemo(()=>{
         return [
             {label: '首页', key: "home"},
@@ -52,6 +57,14 @@ function useMockItems(){
             }
         ]
     },[])
+
+    return {treeItems}
+}
+
+function useItems(){
+    // const {treeItems} = useMockTreeItems()
+
+    const {treeItems} = useTreeItems()
 
     const flatItems = useMemo(()=>{
         const result: { label: string; key: string; children?: undefined; }[] = [];
@@ -117,4 +130,60 @@ function IconButton(props:IconButtonProps){
                        e.preventDefault()
                    }}
                    icon={props.icon}/>
+}
+
+function useTreeItems(){
+    const {data,doFetch} = usePost()
+
+    useEffect(()=>{
+        doFetch('/sysfunc/query')
+    },[doFetch])
+
+    const treeItems = useMemo(()=>{
+        return generateMenu(data)
+    },[data])
+
+    console.log('useTreeItems', treeItems)
+
+    return {treeItems}
+}
+
+interface MenuItem {
+    funcType: number;
+    funcName: string;
+    menuUrl: string;
+    expanded: boolean;
+    funcCode: string;
+    label?: string;
+    to?: string;
+    key?: string;
+    children?: MenuItem[];
+    level?: number; // Assuming level is a property in the data
+    parentId?: string; // Assuming parentId is a property in the data
+}
+
+function generateMenu(data: MenuItem[]): MenuItem[] {
+    let menu: MenuItem[] = [];
+    const subs = _.filter(data, (o) => o.funcType === 0 || o.funcType === 1);
+
+    _.forEach(subs, (ele, i) => {
+        // ele.text = ele.funcName;
+        ele.label = ele.funcName;
+        ele.to = ele.menuUrl;
+        ele.expanded = false;
+        // ele.id = ele.funcCode;
+        ele.key = ele.funcCode;
+
+        const subsList = _.filter(subs, (item) => ele.funcCode === item.parentId);
+
+        if (subsList?.length > 0) {
+            ele.children = subsList;
+        }
+
+        if (i === subs.length - 1) {
+            menu = _.filter(subs, (o) => o.level === 0);
+        }
+    });
+
+    return menu;
 }
