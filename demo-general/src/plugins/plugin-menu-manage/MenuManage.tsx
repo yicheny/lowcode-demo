@@ -1,19 +1,39 @@
-import React, {ReactNode, useCallback, useEffect, useMemo, useState} from "react";
+import React, {ReactNode, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {Input, Menu, Button} from "antd";
 import _ from 'lodash'
 import {
     PlusOutlined,
-    AppstoreAddOutlined
+    AppstoreAddOutlined,
+    MinusOutlined,
+    EditOutlined,
 } from '@ant-design/icons';
 import {usePost} from "../../hooks";
 import {useOpen} from "./hooks";
 import {Edit} from "./Edit";
+import {Remove} from "./Remove";
 
 const fontSize = 16;
 
+const MenuContext = React.createContext({})
+
+enum OPERATION_TYPE {
+    ROOT_ADD,
+    BROTHER_ADD,
+    CHILD_ADD,
+    CURRENT_EDIT,
+    CURRENT_DEL
+}
+
+const SAVE_TYPES = [
+    OPERATION_TYPE.ROOT_ADD,
+    OPERATION_TYPE.BROTHER_ADD,
+    OPERATION_TYPE.CHILD_ADD,
+    OPERATION_TYPE.CURRENT_EDIT,
+]
+
 export function MenuManage(){
     const [key,setKey] = useState('')
-    const {openInfo,setOpenInfo,isOpen,close} = useOpen()
+    const {openInfo,setOpenInfo,isOpen,hasType,close} = useOpen<OPERATION_TYPE>()
     const {renderItems,filterItems,refresh} = useItems()
 
     const fis = filterItems(key)
@@ -22,21 +42,28 @@ export function MenuManage(){
 
     // console.log('openInfo',openInfo)
 
-    return <div style={{height:'100%',overflow:"hidden"}}>
-        <div style={{display:'flex',alignItems:'center'}}>
-            <Input.Search placeholder={'请输入……'}
-                          allowClear
-                          style={{width:200,marginLeft:24}}
-                          onChange={x => setKey(x.target.value)}/>
-            <IconButton icon={<PlusOutlined style={{fontSize}}/>} onClick={()=>setOpenInfo({type:'add'})}/>
+    return <MenuContext.Provider value={{setOpenInfo}}>
+        <div style={{height:'100%',overflow:"hidden"}}>
+            <div style={{display:'flex',alignItems:'center'}}>
+                <Input.Search placeholder={'请输入……'}
+                              allowClear
+                              style={{width:200,marginLeft:24}}
+                              onChange={x => setKey(x.target.value)}/>
+                <IconButton icon={<PlusOutlined style={{fontSize}}/>}
+                            size={'middle'}
+                            onClick={()=>setOpenInfo({type:OPERATION_TYPE.ROOT_ADD, title:"添加根目录"})}/>
+            </div>
+            <Menu className={'nav-menu'}
+                  style={{height:'100%',overflow:'auto',paddingBottom:12}}
+                  items={fis || renderItems}
+                  defaultSelectedKeys={['home']}
+                  mode={'inline'}/>
+            {hasType(SAVE_TYPES) && <Edit title={openInfo.title} close={close} refresh={refresh}/>}
+            {isOpen(OPERATION_TYPE.CURRENT_DEL) && <Remove close={close} refresh={refresh} params={openInfo.data}>
+                是否确认删除 {_.get(openInfo.data,'funcName')} ？
+            </Remove>}
         </div>
-        <Menu className={'nav-menu'}
-              style={{height:'100%',overflow:'auto'}}
-              items={fis || renderItems}
-              defaultSelectedKeys={['home']}
-              mode={'inline'}/>
-        {isOpen('add') && <Edit title={'添加根菜单'} close={close} refresh={refresh}/>}
-    </div>
+    </MenuContext.Provider>
 }
 
 function useMockTreeItems(){
@@ -101,7 +128,7 @@ function useItems(){
 
                 return {
                     ...x,
-                    label:<Operation title={x.label}/>
+                    label:<Operation title={x.label} data={x}/>
                 }
             })
         }
@@ -112,26 +139,15 @@ function useItems(){
     return {renderItems,filterItems,refresh}
 }
 
-type OperationProps = {
-    title:string
-}
-function Operation(props:OperationProps){
-    const {title} = props;
-
-    return <>
-        {title}
-        <IconButton icon={<PlusOutlined style={{fontSize}}/>} onClick={()=>console.log('添加同级')}/>
-        <IconButton icon={<AppstoreAddOutlined style={{fontSize}}/>} onClick={()=>console.log('添加子级')}/>
-    </>
-}
-
 type IconButtonProps = {
     icon:ReactNode,
-    onClick:()=>void
+    onClick:()=>void,
+    size?:'large' | 'middle' | 'small'
 }
 function IconButton(props:IconButtonProps){
     return <Button shape={'circle'}
-                   style={{marginLeft:8,}}
+                   style={{marginLeft:4,}}
+                   size={props.size || 'small'}
                    onClick={e=>{
                        e.stopPropagation()
                        e.preventDefault()
@@ -197,4 +213,25 @@ function generateMenu(data: MenuItem[]): MenuItem[] {
     });
 
     return menu;
+}
+
+
+type OperationProps = {
+    title:string,
+    data:MenuItem,
+}
+function Operation(props:OperationProps){
+    const {title,data} = props;
+    // @ts-ignore
+    const {setOpenInfo} = useContext(MenuContext)
+
+    // console.log('setOpenInfo', setOpenInfo)
+
+    return <>
+        {title}
+        <IconButton icon={<PlusOutlined style={{fontSize}}/>} onClick={()=>console.log('添加同级')}/>
+        <IconButton icon={<AppstoreAddOutlined style={{fontSize}}/>} onClick={()=>console.log('添加子级')}/>
+        <IconButton icon={<EditOutlined style={{fontSize}}/>} onClick={()=>console.log('编辑')}/>
+        <IconButton icon={<MinusOutlined style={{fontSize}}/>} onClick={()=>setOpenInfo({type:OPERATION_TYPE.CURRENT_DEL,data})}/>
+    </>
 }

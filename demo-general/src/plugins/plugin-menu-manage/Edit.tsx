@@ -36,7 +36,7 @@ export function Edit(props:EditProps){
         try{
             await form.validateFields()
             const values = form.getFieldsValue()
-            console.log('values', values)
+            // console.log('values', values)
             const r = await doFetch('/sysfunc/save',values)
             message.success('操作成功！')
             refresh()
@@ -57,16 +57,16 @@ export function Edit(props:EditProps){
             <Form.Item label="功能类型" name="funcType" rules={[{ required: true }]}>
                 <Select options={funcTypeOptions} />
             </Form.Item>
-            <Form.Item label="菜单层级" name="level" rules={[{ required: false }]}>
+            <Form.Item label="菜单层级" name="level" rules={[{ required: true }]}>
                 <InputNumber />
             </Form.Item>
             <Form.Item label="菜单URL" name="menuUrl" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
-            <Form.Item label="模块编号" name="moduleID" rules={[{ required: false }]}>
+            <Form.Item label="模块编号" name="moduleID" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
-            <Form.Item label="菜单功能编号" name="parentId" rules={[{ required: false }]}>
+            <Form.Item label="菜单功能编号" name="parentId" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
         </Form>
