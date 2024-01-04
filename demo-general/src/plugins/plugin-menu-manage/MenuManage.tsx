@@ -6,16 +6,21 @@ import {
     AppstoreAddOutlined
 } from '@ant-design/icons';
 import {usePost} from "../../hooks";
+import {useOpen} from "./hooks";
+import {Edit} from "./Edit";
 
 const fontSize = 16;
 
 export function MenuManage(){
     const [key,setKey] = useState('')
-    const {renderItems,filterItems} = useItems()
+    const {openInfo,setOpenInfo,isOpen,close} = useOpen()
+    const {renderItems,filterItems,refresh} = useItems()
 
     const fis = filterItems(key)
 
     // console.log('fis', fis)
+
+    // console.log('openInfo',openInfo)
 
     return <div style={{height:'100%',overflow:"hidden"}}>
         <div style={{display:'flex',alignItems:'center'}}>
@@ -23,13 +28,14 @@ export function MenuManage(){
                           allowClear
                           style={{width:200,marginLeft:24}}
                           onChange={x => setKey(x.target.value)}/>
-            <IconButton icon={<PlusOutlined style={{fontSize}}/>}/>
+            <IconButton icon={<PlusOutlined style={{fontSize}}/>} onClick={()=>setOpenInfo({type:'add'})}/>
         </div>
         <Menu className={'nav-menu'}
               style={{height:'100%',overflow:'auto'}}
               items={fis || renderItems}
               defaultSelectedKeys={['home']}
               mode={'inline'}/>
+        {isOpen('add') && <Edit title={'添加根菜单'} close={close} refresh={refresh}/>}
     </div>
 }
 
@@ -64,7 +70,7 @@ function useMockTreeItems(){
 function useItems(){
     // const {treeItems} = useMockTreeItems()
 
-    const {treeItems} = useTreeItems()
+    const {treeItems,refresh} = useTreeItems()
 
     const flatItems = useMemo(()=>{
         const result: { label: string; key: string; children?: undefined; }[] = [];
@@ -103,7 +109,7 @@ function useItems(){
 
     // console.log('renderItems', renderItems)
 
-    return {renderItems,filterItems}
+    return {renderItems,filterItems,refresh}
 }
 
 type OperationProps = {
@@ -114,13 +120,14 @@ function Operation(props:OperationProps){
 
     return <>
         {title}
-        <IconButton icon={<PlusOutlined style={{fontSize}}/>}/>
-        <IconButton icon={<AppstoreAddOutlined style={{fontSize}}/>}/>
+        <IconButton icon={<PlusOutlined style={{fontSize}}/>} onClick={()=>console.log('添加同级')}/>
+        <IconButton icon={<AppstoreAddOutlined style={{fontSize}}/>} onClick={()=>console.log('添加子级')}/>
     </>
 }
 
 type IconButtonProps = {
-    icon:ReactNode
+    icon:ReactNode,
+    onClick:()=>void
 }
 function IconButton(props:IconButtonProps){
     return <Button shape={'circle'}
@@ -128,6 +135,7 @@ function IconButton(props:IconButtonProps){
                    onClick={e=>{
                        e.stopPropagation()
                        e.preventDefault()
+                       props.onClick();
                    }}
                    icon={props.icon}/>
 }
@@ -135,17 +143,20 @@ function IconButton(props:IconButtonProps){
 function useTreeItems(){
     const {data,doFetch} = usePost()
 
-    useEffect(()=>{
+    const refresh = useCallback(()=>{
         doFetch('/sysfunc/query')
     },[doFetch])
+
+    //初始请求一次
+    useEffect(()=>refresh(),[refresh])
 
     const treeItems = useMemo(()=>{
         return generateMenu(data)
     },[data])
 
-    console.log('useTreeItems', treeItems)
+    // console.log('useTreeItems', treeItems)
 
-    return {treeItems}
+    return {treeItems,refresh}
 }
 
 interface MenuItem {
