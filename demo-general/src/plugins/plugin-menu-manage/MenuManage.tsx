@@ -16,7 +16,7 @@ const fontSize = 16;
 
 const MenuContext = React.createContext({})
 
-enum OPERATION_TYPE {
+export enum OPERATION_TYPE {
     ROOT_ADD,
     BROTHER_ADD,
     CHILD_ADD,
@@ -51,14 +51,14 @@ export function MenuManage(){
                               onChange={x => setKey(x.target.value)}/>
                 <IconButton icon={<PlusOutlined style={{fontSize}}/>}
                             size={'middle'}
-                            onClick={()=>setOpenInfo({type:OPERATION_TYPE.ROOT_ADD, title:"添加根目录"})}/>
+                            onClick={()=>setOpenInfo({type:OPERATION_TYPE.ROOT_ADD, title:"新增"})}/>
             </div>
             <Menu className={'nav-menu'}
                   style={{height:'100%',overflow:'auto',paddingBottom:12}}
                   items={fis || renderItems}
                   defaultSelectedKeys={['home']}
                   mode={'inline'}/>
-            {hasType(SAVE_TYPES) && <Edit title={openInfo.title} close={close} refresh={refresh}/>}
+            {hasType(SAVE_TYPES) && <Edit title={openInfo.title} close={close} refresh={refresh} data={openInfo.data} type={openInfo.type}/>}
             {isOpen(OPERATION_TYPE.CURRENT_DEL) && <Remove close={close} refresh={refresh} params={openInfo.data}>
                 是否确认删除 {_.get(openInfo.data,'funcName')} ？
             </Remove>}
@@ -176,6 +176,7 @@ function useTreeItems(){
 }
 
 interface MenuItem {
+    moduleID:string;
     funcType: number;
     funcName: string;
     menuUrl: string;
@@ -191,7 +192,11 @@ interface MenuItem {
 
 function generateMenu(data: MenuItem[]): MenuItem[] {
     let menu: MenuItem[] = [];
-    const subs = _.filter(data, (o) => o.funcType === 0 || o.funcType === 1);
+    const subs = _.filter(data, (o) => {
+        const supportType = o.funcType === 0 || o.funcType === 1
+        const supportModule = !['BM','BT'].includes(o.moduleID)
+        return supportModule && supportType
+    });
 
     _.forEach(subs, (ele, i) => {
         // ele.text = ele.funcName;
@@ -229,9 +234,9 @@ function Operation(props:OperationProps){
 
     return <>
         {title}
-        <IconButton icon={<PlusOutlined style={{fontSize}}/>} onClick={()=>console.log('添加同级')}/>
-        <IconButton icon={<AppstoreAddOutlined style={{fontSize}}/>} onClick={()=>console.log('添加子级')}/>
-        <IconButton icon={<EditOutlined style={{fontSize}}/>} onClick={()=>console.log('编辑')}/>
+        {/*<IconButton icon={<PlusOutlined style={{fontSize}}/>} onClick={()=>console.log('添加同级')}/>*/}
+        {/*<IconButton icon={<AppstoreAddOutlined style={{fontSize}}/>} onClick={()=>console.log('添加子级')}/>*/}
+        <IconButton icon={<EditOutlined style={{fontSize}}/>} onClick={()=>setOpenInfo({type:OPERATION_TYPE.CURRENT_EDIT,data,title:"编辑"})}/>
         <IconButton icon={<MinusOutlined style={{fontSize}}/>} onClick={()=>setOpenInfo({type:OPERATION_TYPE.CURRENT_DEL,data})}/>
     </>
 }
