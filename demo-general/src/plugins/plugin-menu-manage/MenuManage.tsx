@@ -11,6 +11,8 @@ import {usePost} from "../../hooks";
 import {useOpen} from "./hooks";
 import {Edit} from "./Edit";
 import {Remove} from "./Remove";
+import {project} from "@alilc/lowcode-engine";
+import {saveLocalSchema} from "../../services/mockService";
 
 const fontSize = 16;
 
@@ -57,6 +59,7 @@ export function MenuManage(){
                   style={{height:'100%',overflow:'auto',paddingBottom:12}}
                   items={fis || renderItems}
                   defaultSelectedKeys={['home']}
+                  onClick={useSwitchPage()}
                   mode={'inline'}/>
             {hasType(SAVE_TYPES) && <Edit title={openInfo.title} close={close} refresh={refresh} data={openInfo.data} type={openInfo.type}/>}
             {isOpen(OPERATION_TYPE.CURRENT_DEL) && <Remove close={close} refresh={refresh} params={openInfo.data}>
@@ -64,6 +67,19 @@ export function MenuManage(){
             </Remove>}
         </div>
     </MenuContext.Provider>
+}
+
+function useSwitchPage(){
+    const {doFetch} = usePost()
+    return useCallback((o)=>{
+        const {funcCode,moduleID} = o.item.props
+        doFetch(`/app/func/query/?funcCode=${funcCode}&moduleID=${moduleID}`).then(result=>{
+            const schema = JSON.parse(_.get(result, 'schemaContent') as unknown as string)
+            // console.log('schema', schema)
+            project.importSchema(schema)
+            saveLocalSchema()
+        })
+    },[doFetch])
 }
 
 function useMockTreeItems(){
