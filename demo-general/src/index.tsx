@@ -34,6 +34,7 @@ import TemplatePagesPlugin from './plugins/plugin-template-pages';
 import {loginStore} from "./utils";
 import QuitLoginPlugin from "./plugins/piugin-quit-login";
 import MenuManagePlugin from "./plugins/plugin-menu-manage";
+import PublishPagePlugin from "./plugins/piugin-publish-page";
 // import { test } from './test';
 
 async function registerPlugins() {
@@ -106,6 +107,8 @@ async function registerPlugins() {
   await plugins.register(SaveSamplePlugin);
 
   await plugins.register(QuitLoginPlugin);
+
+  await plugins.register(PublishPagePlugin);
 
   //预览
   await plugins.register(PreviewSamplePlugin);
