@@ -109,8 +109,8 @@ function PagesManage() {
             </span>
             </Item>
         }}/>
-        <AddModal title={'新增'} open={checkOpenType(OPEN.ADD)} {...dialogInfo} />
-        <AddModal title={'编辑'} open={checkOpenType(OPEN.EDIT)} {...dialogInfo}/>
+        { checkOpenType(OPEN.ADD) && <AddModal title={'新增'} open {...dialogInfo} /> }
+        { checkOpenType(OPEN.EDIT) && <AddModal title={'编辑'} open {...dialogInfo} /> }
         <DelModal open={checkOpenType(OPEN.DEL)}  {...dialogInfo}/>
     </>
 }

@@ -1,9 +1,10 @@
-import React, {useCallback} from 'react';
-import {Button, Form, Input, Modal, message} from 'antd';
+import React, {useCallback, useEffect, useMemo} from 'react';
+import {Button, Form, Input, Modal, message, Select} from 'antd';
 import {usePost} from "../../../hooks";
 import {tryExecute} from "../../../utils";
 import {AppInfo} from "../index";
 import {OPEN} from "../../../hooks/useOpen";
+import _ from "lodash";
 
 type AddModalProps = {
     title:string,
@@ -16,11 +17,12 @@ type AddModalProps = {
 
 export default function AddModal(props:AddModalProps) {
     const {open,close,title,info,refresh,type} = props
+    const [form] = Form.useForm()
     const commit = useCommit(close,refresh)
 
-    const onFinish = (values: any) => {
-        info.schemaName = values.schemaName
-        info.resource = values.resource
+    const onFinish = (values) => {
+        _.assign(info,values)
+        // console.log('info', info)
         commit(type,info)
     };
 
@@ -30,6 +32,7 @@ export default function AddModal(props:AddModalProps) {
 
     return <Modal title={title} open={open} centered footer={null} onCancel={close}>
         <Form
+            form={form}
             key={`${info?.appId}_${info?.version}_${info?.id}`}
             name="basic"
             labelCol={{ span: 6 }}
@@ -39,36 +42,26 @@ export default function AddModal(props:AddModalProps) {
             onFinishFailed={onFinishFailed}
             autoComplete="off"
         >
-            <Form.Item
-                label="名称"
-                name="schemaName"
-                rules={[{ required: true, message: '请输入schema名称！' }]}
-            >
+            <Form.Item label="名称" name="schemaName" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
 
-            <Form.Item
-                label="路由地址"
-                name="resource"
-                rules={[{ required: true, message: '请输入路由地址！' }]}
-            >
+            <Form.Item label="路由地址" name="resource" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
 
-            {/*<Form.Item
-                label="模板"
-                name="template"
-                rules={[{ required: true, message: '请选择模板页！' }]}
-            >
-                <Select defaultValue="searchPage"
-                        onChange={()=>{}}
-                        options={[
-                                { label: '查询页', value: 'searchPage' },
-                                { label: '测试页1', value: 'testPage1' },
-                                { label: '测试页2', value: 'testPage2' },
-                                { label: '测试页3', value: 'testPage3' },
-                            ]}/>
-            </Form.Item>*/}
+            <Form.Item label="模块编号" name="moduleID" hidden rules={[{ required: true }]}>
+                <Input />
+            </Form.Item>
+
+            <Form.Item label="绑定菜单" name="funcCode" rules={[{ required: true }]}>
+                <Select options={useMenuOptions()}
+                        showSearch
+                        optionFilterProp="label"
+                        onChange={(v,o)=>{
+                            form.setFieldValue('moduleID', o.moduleID)
+                        }}/>
+            </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
                 <Button type="primary" htmlType="submit">
@@ -95,4 +88,51 @@ function useCommit(close:()=>void,refresh:(appInfo:AppInfo)=>void){
             close()
         })
     },[])
+}
+
+interface SysFunc {
+    level: number;
+    funcCode: string;
+    funcName: string;
+    funcType: number;
+    moduleID: string;
+    // 添加其他属性...
+}
+
+interface ParentIdOption {
+    label: string;
+    value: string;
+    level: number;
+}
+
+function useMenuOptions(): ParentIdOption[] {
+    const { data, doFetch } = usePost();
+
+    const refresh = useCallback(() => {
+        doFetch('/sysfunc/query');
+    }, [doFetch]);
+
+    // 初始请求一次
+    useEffect(() => {
+        refresh();
+    }, [refresh]);
+
+    return useMemo(() => {
+        const options: ParentIdOption[] = [];
+
+        _.forEach(data,(o: SysFunc) => {
+            const supportType = o.funcType === 1;
+            const supportModule = !['BM', 'BT'].includes(o.moduleID);
+
+            if (supportModule && supportType) {
+                options.push({
+                    label: o.funcName,
+                    value: o.funcCode,
+                    moduleID: o.moduleID
+                });
+            }
+        });
+
+        return options
+    }, [data])
 }

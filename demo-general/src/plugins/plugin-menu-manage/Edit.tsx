@@ -47,7 +47,8 @@ export function Edit(props:EditProps){
             await form.validateFields()
             const values = form.getFieldsValue()
             // console.log('values', values)
-            const r = await doFetch('/sysfunc/save',values)
+            const url = isEdit ? '/sysfunc/update' : '/sysfunc/save'
+            const r = await doFetch(url,values)
             message.success('操作成功！')
             refresh()
             close()
@@ -79,12 +80,12 @@ export function Edit(props:EditProps){
             <Form.Item label="父节点编号" name="parentId" rules={[{ required: true }]}>
                 <Select options={useParentIdOptions()}
                         showSearch
+                        optionFilterProp="label"
                         style={{ width: COM_WIDTH }}
                         onChange={(v,o)=>{
                             // @ts-ignore
                             form.setFieldValue('level', o.level + 1)
-                        }}
-                        optionFilterProp="label"/>
+                        }}/>
             </Form.Item>
         </Form>
     </Modal>
