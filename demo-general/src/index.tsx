@@ -35,6 +35,7 @@ import {loginStore} from "./utils";
 import QuitLoginPlugin from "./plugins/piugin-quit-login";
 import MenuManagePlugin from "./plugins/plugin-menu-manage";
 import PublishPagePlugin from "./plugins/piugin-publish-page";
+import SaveTemplatePlugin from "./plugins/plugin-save-template";
 // import { test } from './test';
 
 async function registerPlugins() {
@@ -103,6 +104,8 @@ async function registerPlugins() {
 
   // // 注册出码插件
   // await plugins.register(CodeGenPlugin);
+
+  await plugins.register(SaveTemplatePlugin);
 
   await plugins.register(SaveSamplePlugin);
 
