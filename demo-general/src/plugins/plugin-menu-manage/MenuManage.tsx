@@ -1,5 +1,5 @@
 import React, {ReactNode, useCallback, useContext, useEffect, useMemo, useState} from "react";
-import {Input, Menu, Button} from "antd";
+import {Input, Menu, Button, Select, message} from "antd";
 import _ from 'lodash'
 import {
     PlusOutlined,
@@ -13,6 +13,7 @@ import {Edit} from "./Edit";
 import {Remove} from "./Remove";
 import {project} from "@alilc/lowcode-engine";
 import {saveLocalSchema} from "../../services/mockService";
+import {safeParse} from "@alilc/lowcode-plugin-datasource-pane/lib/utils/misc";
 
 const fontSize = 16;
 
@@ -37,6 +38,7 @@ export function MenuManage(){
     const [key,setKey] = useState('')
     const {openInfo,setOpenInfo,isOpen,hasType,close} = useOpen<OPERATION_TYPE>()
     const {renderItems,filterItems,refresh} = useItems()
+    const {switchPage,versionOptions,selectPage,page} = useSwitchPage()
 
     const fis = filterItems(key)
 
@@ -47,7 +49,7 @@ export function MenuManage(){
     return <MenuContext.Provider value={{setOpenInfo}}>
         <div style={{height:'100%',overflow:"hidden"}}>
             <div style={{display:'flex',alignItems:'center'}}>
-                <Input.Search placeholder={'请输入……'}
+                <Input.Search placeholder={'请输入菜单名称……'}
                               allowClear
                               style={{width:200,marginLeft:24}}
                               onChange={x => setKey(x.target.value)}/>
@@ -55,11 +57,19 @@ export function MenuManage(){
                             size={'middle'}
                             onClick={()=>setOpenInfo({type:OPERATION_TYPE.ROOT_ADD, title:"新增"})}/>
             </div>
+            <div>
+                <Select style={{width:200,marginLeft:24,marginTop:8}}
+                        options={versionOptions}
+                        disabled={!Boolean(page)}
+                        onChange={selectPage}
+                        value={page}
+                        placeholder={'请选择版本……'}/>
+            </div>
             <Menu className={'nav-menu'}
-                  style={{height:'100%',overflow:'auto',paddingBottom:12}}
+                  style={{height:'100%',overflow:'auto',paddingBottom:64}}
                   items={fis || renderItems}
                   defaultSelectedKeys={['home']}
-                  onClick={useSwitchPage()}
+                  onClick={switchPage}
                   mode={'inline'}/>
             {hasType(SAVE_TYPES) && <Edit title={openInfo.title} close={close} refresh={refresh} data={openInfo.data} type={openInfo.type}/>}
             {isOpen(OPERATION_TYPE.CURRENT_DEL) && <Remove close={close} refresh={refresh} params={openInfo.data}>
@@ -70,16 +80,39 @@ export function MenuManage(){
 }
 
 function useSwitchPage(){
-    const {doFetch} = usePost()
-    return useCallback((o)=>{
-        const {funcCode,moduleID} = o.item.props
-        doFetch(`/app/func/query/?funcCode=${funcCode}&moduleID=${moduleID}`).then(result=>{
-            const schema = JSON.parse(_.get(result, 'schemaContent') as unknown as string)
-            // console.log('schema', schema)
-            project.importSchema(schema)
-            saveLocalSchema()
+    const {doFetch,data} = usePost()
+    const [page,setPage] = useState()
+
+    const switchPage = useCallback((o)=>{
+        const {funcCode,moduleID,funcName} = o.item.props
+        doFetch(`/app/func/query/?funcCode=${funcCode}&moduleID=${moduleID}`).then(r=>{
+            if(_.isEmpty(r)) message.error(`菜单${funcName}没有绑定Schema，请进行绑定！`)
+            importSchema(_.get(r,'0'))
         })
     },[doFetch])
+
+    const versionOptions = useMemo(()=>{
+        return _.map(data,x=>({label:x.version, value:x.version, source:x}))
+    },[data])
+
+    useEffect(()=>{
+        setPage(_.get(versionOptions,'0.value'))
+    },[versionOptions])
+
+    const selectPage = useCallback((v,o)=>{
+        // console.log('o', o)
+        setPage(v)
+        importSchema(o.source)
+    },[])
+
+    return {switchPage,versionOptions,page,selectPage}
+}
+
+function importSchema(result: any){
+    const schema = safeParse(_.get(result, 'schemaContent') as unknown as string)
+    // console.log('schema', schema)
+    project.importSchema(schema)
+    // saveLocalSchema()
 }
 
 function useMockTreeItems(){
