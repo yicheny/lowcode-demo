@@ -17,6 +17,7 @@ function Com(){
                 schemaContent:JSON.stringify(schemaContent),
                 schemaId:pageInfo?.schemaId,
                 schemaName:pageInfo?.schemaName,
+                version:pageInfo?.version,
             }
             // console.log('pageInfo', pageInfo, appInfo)
             doFetch('/schema/snapshot',appInfo)
