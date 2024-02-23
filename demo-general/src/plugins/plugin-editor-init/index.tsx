@@ -28,7 +28,7 @@ const EditorInitPlugin = (ctx: IPublicModelPluginContext, options: any) => {
       await addComponents(assets);
 
       const schema = await getProjectSchema(scenarioName);
-      dynamicBizMaterial(schema.componentsMap)
+      dynamicBizMaterial(schema.componentsMap, assets)
       // 加载 schema
       project.importSchema(schema as any);
     },
@@ -358,11 +358,18 @@ EditorInitPlugin.meta = {
 export default EditorInitPlugin;
 
 //TODO 动态设置业务物料库--临时方案
-function dynamicBizMaterial(componentsMap: any){
+function dynamicBizMaterial(componentsMap: any, assets: any){
+  const version = getBizMaterialVersion(assets)
+
   _.forEach(componentsMap, x=>{
     if(x.package === 'lowcode-material-biz'){
       x.package = 'root-lowcode-material-biz';
-      x.version = '0.17.0';
+      x.version = version;
     }
   })
+}
+
+function getBizMaterialVersion(assets?:any){
+  const bizMate = _.find(assets.packages,{package:"root-lowcode-material-biz"})
+  return _.get(bizMate,'version','0.17.0')
 }
