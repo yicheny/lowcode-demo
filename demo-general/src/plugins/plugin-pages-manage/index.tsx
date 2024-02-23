@@ -89,7 +89,10 @@ function PagesManage() {
             <Input.Search placeholder={'搜索schema项'} style={{width: 240, marginTop: 8}}
                           onChange={(e) => setFilterKey(e.target.value)}/>
         </div>
-        <List dataSource={filteredList} renderItem={(x: SLInfo) => {
+        <List dataSource={filteredList} style={{
+            overflow: 'scroll',
+            maxHeight:' calc(100% - 100px)'
+        }} renderItem={(x: SLInfo) => {
             return <Item key={x.key} className={clsx(classes.item, {[classes.active]: active.key === x.key})}
                          onClick={() => {
                              selectSchema(x);
