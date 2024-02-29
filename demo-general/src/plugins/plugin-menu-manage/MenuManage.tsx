@@ -12,10 +12,9 @@ import {useOpen} from "./hooks";
 import {Edit} from "./Edit";
 import {Remove} from "./Remove";
 import {project} from "@alilc/lowcode-engine";
-import {saveLocalSchema} from "../../services/mockService";
 import {safeParse} from "@alilc/lowcode-plugin-datasource-pane/lib/utils/misc";
 
-const fontSize = 16;
+const fontSize = 14;
 
 const MenuContext = React.createContext({})
 
@@ -282,10 +281,11 @@ function Operation(props:OperationProps){
     // console.log('setOpenInfo', setOpenInfo)
 
     return <>
-        {title}
         {/*<IconButton icon={<PlusOutlined style={{fontSize}}/>} onClick={()=>console.log('添加同级')}/>*/}
         {/*<IconButton icon={<AppstoreAddOutlined style={{fontSize}}/>} onClick={()=>console.log('添加子级')}/>*/}
         <IconButton icon={<EditOutlined style={{fontSize}}/>} onClick={()=>setOpenInfo({type:OPERATION_TYPE.CURRENT_EDIT,data,title:"编辑"})}/>
-        <IconButton icon={<MinusOutlined style={{fontSize}}/>} onClick={()=>setOpenInfo({type:OPERATION_TYPE.CURRENT_DEL,data})}/>
+        <IconButton  icon={<MinusOutlined style={{fontSize}}/>} onClick={()=>setOpenInfo({type:OPERATION_TYPE.CURRENT_DEL,data})}/>
+        <span style={{marginRight:8}}/>
+        {title}
     </>
 }
